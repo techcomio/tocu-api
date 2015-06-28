@@ -1,0 +1,52 @@
+{
+  "name": "tocu-api",
+  "version": "1.0.0",
+  "description": "tocu api",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "run": "gulp"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/techcomio/tocu-api.git"
+  },
+  "keywords": [
+    "tocu",
+    "api",
+    "nodejs"
+  ],
+  "author": "Hieu Tran <tranduchieu@me.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/techcomio/tocu-api/issues"
+  },
+  "homepage": "https://github.com/techcomio/tocu-api#readme",
+  "dependencies": {
+    "bcrypt": "^0.8.3",
+    "bluebird": "^2.9.27",
+    "body-parser": "^1.12.4",
+    "busboy": "^0.2.9",
+    "connect-busboy": "0.0.2",
+    "crypto": "0.0.3",
+    "csprng": "^0.1.1",
+    "express": "^4.12.4",
+    "gm": "^1.18.1",
+    "gulp": "^3.8.11",
+    "gulp-browserify": "^0.5.1",
+    "gulp-concat": "^2.5.2",
+    "gulp-jshint": "^1.11.0",
+    "gulp-nodemon": "^2.0.3",
+    "imgr": "^0.10.4",
+    "knox": "^0.9.2",
+    "moment": "^2.10.3",
+    "multer": "^0.1.8",
+    "passport": "^0.2.2",
+    "passport-http-bearer": "^1.0.1",
+    "passport-local": "^1.0.0",
+    "pg": "^4.4.0",
+    "pg-hstore": "^2.3.2",
+    "sequelize": "^3.2.0",
+    "sequelize-cli": "^1.7.0"
+  }
+}
