@@ -3,11 +3,15 @@ var moment  = require('moment');
 var promise = require('bluebird');
 var gm      = require('gm').subClass({imageMagick: true});
 
+// Config
+var env     = process.env.NODE_ENV || 'development';
+var config  = require(__dirname + '/../config/config.json')[env];
+
+
 var router = express.Router();
 
 
 router.post('/', function(req, res, next) {
-  console.log('uppppppp-------------');
 
   if(req.files !== undefined && req.files.image) {
     var images = [].concat(req.files.image)
@@ -36,7 +40,7 @@ router.post('/', function(req, res, next) {
             /* save local */
             this.write('./images/' + img.name, function (err) {
               if (err) reject(err);
-              resolve(img.name);
+              resolve(config.siteUrl + '/image/' + img.name);
             });
           });
       });

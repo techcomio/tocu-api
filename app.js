@@ -80,13 +80,19 @@ var enableCORS = function(req, res, next) {
 
 var app = express();
 
-// Get image
+/*
+Get image by size
+
+http://localhost:3000//:path/:size/:file.:ext
+Example: http://tocu-api-dev-tranduchieu.c9.io/image/100x100/c8c402e41f893cdafcbb-photo-2016-2012-2010-2004-05-2015.jpg
+*/
 var imgr = new IMGR();
 imgr.serve('./images/')
     .namespace('/image')
     .urlRewrite('/:path/:size/:file.:ext')
-    .whitelist([ '960x640', '640x426', '480x320', '320x213' ])
+    .whitelist([ '960x640', '640x426', '480x320', '320x213', '100x100' ])
     .using(app);
+
 
 app
   .use(enableCORS)
@@ -94,7 +100,7 @@ app
     extended: true
   }))
   .use(bodyParser.json())
-  .use(multer())
+  // .use(multer())
   .use(multer({ // https://github.com/expressjs/multer
     dest: './images/',
     rename: function (fieldname, filename) {

@@ -1,0 +1,29 @@
+{
+  "development": {
+    "esmsApiKey": "YOUR_API_KEY",
+    "esmsSecretKey": "YOUR_SECRECT_KEY",
+    "esmsHost": "api.esms.vn",
+    "esmsBalancePath": "/MainService.svc/xml/GetBalance/",
+    "esmsSendByRandomPath": "/MainService.svc/xml/SendMultipleMessage_V2/",
+    "esmsSendByBrandNamePath": "/MainService.svc/xml/SendMultipleSMSBrandname_V2/",
+    "esmsCheckStatusPath": "/MainService.svc/xml/GetSmsStatus/"
+  },
+  "test": {
+    "esmsApiKey": "YOUR_API_KEY",
+    "esmsSecretKey": "YOUR_SECRECT_KEY",
+    "esmsHost": "api.esms.vn",
+    "esmsBalancePath": "/MainService.svc/xml/GetBalance/",
+    "esmsSendByRandomPath": "/MainService.svc/xml/SendMultipleMessage_V2/",
+    "esmsSendByBrandNamePath": "/MainService.svc/xml/SendMultipleSMSBrandname_V2/",
+    "esmsCheckStatusPath": "/MainService.svc/xml/GetSmsStatus/"
+  },
+  "production": {
+    "esmsApiKey": "YOUR_API_KEY",
+    "esmsSecretKey": "YOUR_SECRECT_KEY",
+    "esmsHost": "api.esms.vn",
+    "esmsBalancePath": "/MainService.svc/xml/GetBalance/",
+    "esmsSendByRandomPath": "/MainService.svc/xml/SendMultipleMessage_V2/",
+    "esmsSendByBrandNamePath": "/MainService.svc/xml/SendMultipleSMSBrandname_V2/",
+    "esmsCheckStatusPath": "/MainService.svc/xml/GetSmsStatus/"
+  }
+}
