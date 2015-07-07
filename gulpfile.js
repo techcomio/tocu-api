@@ -12,6 +12,7 @@ gulp.task('develop', function() {
   nodemon({
     script: 'server.js',
     ext: 'js',
+    env: {'NODE_ENV': 'development'},
     ignore: ['ignored.js']
   })
     .on('change', ['lint'])

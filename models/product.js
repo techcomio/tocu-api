@@ -12,7 +12,10 @@ module.exports = function(sequelize, DataTypes) {
     price: DataTypes.INTEGER,
     salePrice: DataTypes.INTEGER,
     weight: DataTypes.INTEGER,
-    ModelId: DataTypes.INTEGER
+    ModelId: DataTypes.INTEGER,
+    images: {
+      type: DataTypes.ARRAY(DataTypes.TEXT)
+    }
   }, {
     classMethods: {
       associate: function(models) {
