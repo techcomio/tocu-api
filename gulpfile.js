@@ -21,4 +21,14 @@ gulp.task('develop', function() {
     })
 })
 
+gulp.task('test', function() {
+  nodemon({
+    script: 'server.js',
+    ext: 'js',
+    env: {'NODE_ENV': 'test'},
+    ignore: ['ignored.js']
+  })
+})
+
 gulp.task('default', ['develop']);
+gulp.task('test', ['test']);
