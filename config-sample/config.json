@@ -1,7 +1,4 @@
 {
-  "env": "development",
-  "port": null,
-  
   "development": {
     "siteUrl": "http://tocu-api-dev-tranduchieu.c9.io"
   },
