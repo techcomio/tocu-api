@@ -28,8 +28,6 @@ images = require('./routes/images');
 var models = require('./models');
 
 
-var env = process.env.NODE_ENV || 'development';
-
 // Passport Local
 passport.use(new LocalStrategy({
     usernameField: 'mobilePhone',
