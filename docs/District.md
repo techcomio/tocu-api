@@ -4,7 +4,7 @@ API giúp tìm một Quận huyện hoặc tìm danh sách Quận huyện trong 
 ## Find list District by City
 Tìm danh sách Quận huyện trong một Tỉnh thành.
 
-    POST http://tocu-api-tranduchieu.c9.io/api/district
+    POST http://api-dev.tocu.vn/district
 
 ### Fields
 | Name | Type | Description | Notes |
@@ -68,7 +68,7 @@ Tìm danh sách Quận huyện trong một Tỉnh thành.
 ## Find a District
 Tìm chính xác một Quận huyện dựa vào tên Tỉnh thành & tên Quận huyện.
 
-    POST http://tocu-api-tranduchieu.c9.io/api/district
+    POST http://api-dev.tocu.vn/district
 
 ### Fields
 | Name | Type | Description | Notes |

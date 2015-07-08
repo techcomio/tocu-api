@@ -4,12 +4,12 @@ API quản lý thông tin người mẫu của Shop
 ## List all Model
 Get & list toàn bộ Mẫu
 
-    GET http://tocu-api.herokuapp.com/model
+    GET http://api-dev.tocu.vn/model
 
 
 ### Example
 
-    GET http://tocu-api.herokuapp.com/model
+    GET http://api-dev.tocu.vn/model
 
 
 ### Response
@@ -32,7 +32,7 @@ Get & list toàn bộ Mẫu
 ## Create a Model
 Tạo một Model
 
-    POST http://tocu-api.herokuapp.com/model
+    POST http://api-dev.tocu.vn/model
 
 ### Fields
 | Name | Type | Description |
@@ -46,7 +46,7 @@ Tạo một Model
 
 ### Example
 
-    POST http://tocu-api.herokuapp.com/model
+    POST http://api-dev.tocu.vn/model
 
     {
         "name": "Trần Thùy Dương",

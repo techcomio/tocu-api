@@ -8,45 +8,24 @@ var promise = require('bluebird');
 router.get('/', function(req, res) {
   models.Box.findAll()
     .then(function(boxes) {
-      var boxes = JSON.stringify(boxes);
+      boxes = JSON.stringify(boxes);
 
       promise.map(JSON.parse(boxes), function(box) {
+          // Product type
           if (box.type == 'product') {
 
-            // Đếm số product trong box
-            return models.Product.count({
-                where: {
-                  BoxId: box.id
-                }
-              })
-              .then(function(productCount) {
+            return promise.all([BoxFind2latestProduct(box.id), BoxCountProduct(box.id), BoxCountLike(box.id)])
+              .then(function(result) {
+                result = JSON.stringify(result);
 
-                box['count'] = productCount;
+                box['latestPosts'] = JSON.parse(result)[0];
+                box['postsCount'] = JSON.parse(result)[1];
+                box['likesCount'] = JSON.parse(result)[2];
+
                 return box;
-
               })
-              // Tiếp tục query 2 product mới nhất
-              .then(function(box) {
-
-                // Nếu box có sản phẩm
-                if (box.count > 0) {
-                  return models.Product.findAll({
-                      where: {
-                        BoxId: box.id
-                      },
-                      order: '"createdAt" DESC',
-                      limit: 2
-                    })
-                    .then(function(latestProducts) {
-
-                      box['latestPosts'] = latestProducts;
-                      return box;
-                    });
-                }
-                else {
-                  box['latestPosts'] = [];
-                  return box;
-                }
+              .catch(function(err) {
+                return err;
               });
 
           }
@@ -62,18 +41,22 @@ router.get('/', function(req, res) {
 });
 
 // Get box detail
-
-function BoxFindById(id) {
-  return models.Box.findById(id)
-    .then(function(box) {
-      return box;
-    });
-}
-
 router.get('/:id', function(req, res) {
   var boxId = req.params.id;
 
+  return promise.all([BoxFindById(boxId), BoxCountProduct(boxId), BoxCountLike(boxId)])
+    .then(function(result) {
+      result = JSON.stringify(result);
 
+      var box = JSON.parse(result)[0];
+      box['postsCount'] = JSON.parse(result)[1];
+      box['likesCount'] = JSON.parse(result)[2];
+
+      return res.status(200).json(box);
+    })
+    .catch(function(err) {
+      return res.status(400).json(err);
+    });
 });
 
 // Create a Box
@@ -86,5 +69,51 @@ router.post('/', function(req, res) {
       res.status(400).json(error);
     });
 });
+
+
+// Functions
+function BoxFindById(boxId) {
+  return models.Box.findById(boxId)
+    .then(function(box) {
+      return box;
+    });
+}
+
+function BoxCountProduct(boxId) {
+  return models.Product.count({
+      where: {
+        BoxId: boxId
+      }
+    })
+    .then(function(count) {
+      return count;
+    });
+}
+
+function BoxCountLike(boxId) {
+  return models.Like.count({
+      where: {
+        type: 'box',
+        itemId: boxId
+      }
+    })
+    .then(function(count) {
+      return count;
+    });
+}
+
+function BoxFind2latestProduct(boxId) {
+  return models.Product.findAll({
+      where: {
+        BoxId: boxId
+      },
+      order: '"createdAt" DESC',
+      limit: 2
+    })
+    .then(function(latestProducts) {
+
+      return latestProducts;
+    });
+}
 
 module.exports = router;

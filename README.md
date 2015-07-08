@@ -6,7 +6,7 @@ Tổng hợp toàn bộ API tương tác với dữ liệu `api.tocu.vn` & kèm 
 - NodeJS
 - ExpressJS
 - PostgreSQL
-- Sequelizeg
+- Sequelize
 - PassportJS
 
 

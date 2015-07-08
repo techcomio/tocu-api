@@ -27,7 +27,7 @@
 | `updatedAt` | Date | - | default is `Date.now`
 
 ## Create an User
-    POST http://tocu-api-tranduchieu.c9.io/api/user
+    POST http://api-dev.tocu.vn/user
     
 ### Fields
 | Name | Type | Description | Notes |
@@ -51,7 +51,7 @@
 ## Login and get Token key
 Người dùng đăng nhập & gửi request bằng `mobilePhone` & `password`, xác thực thành công hệ thống sẽ trả về thông tin của người dung, trong đó có Token key.
 
-    POST http://tocu-api-tranduchieu.c9.io/api/token
+    POST http://api-dev.tocu.vn/token
     
 ### Fields
 
@@ -62,7 +62,7 @@ Người dùng đăng nhập & gửi request bằng `mobilePhone` & `password`, 
 
 ### Example
 
-    POST http://tocu-api-tranduchieu.c9.io/api/token
+    POST http://api-dev.tocu.vn/token
     
     {
         "mobilePhone": "0904906903",

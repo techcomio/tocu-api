@@ -8,7 +8,10 @@ module.exports = function(sequelize, DataTypes) {
     description: DataTypes.TEXT,
     BoxId: DataTypes.INTEGER,
     code: DataTypes.STRING,
-    status: DataTypes.STRING,
+    status: {
+      type: DataTypes.ENUM,
+      values: ['Draft', 'Available', 'Suspended', 'Sold', 'Closed']
+    },
     price: DataTypes.INTEGER,
     salePrice: DataTypes.INTEGER,
     weight: DataTypes.INTEGER,

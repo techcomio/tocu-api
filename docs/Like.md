@@ -4,7 +4,7 @@ API post & get số người Like Box, Sản phẩm, Bài viết, Ảnh
 ## Create a Like
 Tạo một Like
 
-    POST http://tocu-api.herokuapp.com/like
+    POST http://api-dev.tocu.vn/like
 
 ### Fields
 | Name | Type | Description |
@@ -16,7 +16,7 @@ Tạo một Like
 
 ### Example
 
-    POST http://tocu-api.herokuapp.com/model
+    POST http://api-dev.tocu.vn/model
 
     {
         "type": "product",
@@ -39,12 +39,12 @@ Tạo một Like
 ## Count Likes by Item ID
 
 
-    GET http://tocu-api.herokuapp.com/like/:type/:id
+    GET http://api-dev.tocu.vn/like/:type/:id
 
 
 ### Example
 
-    GET http://tocu-api.herokuapp.com/like/product/1
+    GET http://api-dev.tocu.vn/like/product/1
 
 
 ### Response

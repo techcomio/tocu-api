@@ -2,10 +2,46 @@ var models = require('../models');
 var express = require('express');
 var router = express.Router();
 
+// Count all
+router.get('/count', function(req, res) {
+  models.Product.count({
+    where: {
+      status: ['Available', 'Suspended']
+    }
+  })
+  .then(function(count) {
+    return res.status(200).json(count);
+  });
+});
+
 // List Products
 router.get('/', function(req, res) {
+  var skip = req.query.skip || 0,
+      limit = req.query.limit || 20;
+      
   models.Product.findAll({
-    include: [models.Box, models.Model]
+    include: [models.Box],
+    offset: skip,
+    limit: limit
+  })
+  .then(function(result) {
+    res.status(200).json(result);
+  });
+});
+
+// List Products by Box
+router.get('/box/:id', function(req, res) {
+  var boxId = req.params.id,
+      skip = req.query.skip || 0,
+      limit = req.query.limit || 20;
+      
+  models.Product.findAll({
+    where: {
+      BoxId: boxId
+    },
+    // include: [models.Box, models.Model],
+    offset: skip,
+    limit: limit
   })
   .then(function(result) {
     res.status(200).json(result);
@@ -24,8 +60,8 @@ router.get('/:id', function(req, res) {
 
     // Count Like
     models.Like.count({where: {type: 'product', itemId: productJSON.id}})
-    .then(function(likeCount) {
-      productJSON['like'] = likeCount;
+    .then(function(likesCount) {
+      productJSON['likesCount'] = likesCount;
 
       res.status(200).json(productJSON);
     });
