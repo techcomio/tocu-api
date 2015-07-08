@@ -1,11 +1,14 @@
 {
   "development": {
+    "port": null,
     "siteUrl": "http://tocu-api-dev-tranduchieu.c9.io"
   },
   "test": {
-    "siteUrl": "http://tocu-api-dev-tranduchieu.c9.io"
+    "port": 3000,
+    "siteUrl": "http://api-dev.tocu.vn"
   },
   "production": {
+    "port": 3001,
     "siteUrl": "http://api.tocu.vn"
   }
 }
