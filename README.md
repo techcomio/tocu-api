@@ -1,5 +1,5 @@
 # Tổ Cú API
-Tổng hợp toàn bộ API tương tác với dữ liệu `api.tocu.vn` & kèm theo tài liệu.Tổ Cú API
+Tổng hợp toàn bộ API tương tác với dữ liệu `api.tocu.vn` & kèm theo tài liệu.
 
 ## Những nền tảng & package chính sử dụng
 
@@ -12,6 +12,7 @@ Tổng hợp toàn bộ API tương tác với dữ liệu `api.tocu.vn` & kèm 
 
 ## APIs
 - [User](/docs/User.md)
+- [Product](/docs/Product.md)
 - [Like](/docs/Like.md)
 - [District](/docs/District.md)
 - [Model](/docs/Model.md)
