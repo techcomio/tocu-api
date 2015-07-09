@@ -1,25 +1,25 @@
 module.exports = function() {
 
-  var fileName = [
-    '1405747102660_196.jpg',
-    '1405747102698_197.jpg',
-    '1405747102718_198.jpg',
-    '1405747102738_199.jpg',
-    '1405747102776_200.jpg',
-    '1405747102790_201.jpg',
-    '1405747102808_202.jpg',
-    '1405747102832_203.jpg',
-    '1405747102850_204.jpg',
-    '1405747102869_205.jpg',
-    '1405747102883_206.jpg',
-    '1405747102896_207.jpg',
-    '1405747102931_208.jpg',
-    '1405747102954_209.jpg',
-    '1405747102972_210.jpg',
-    '1405747103006_211.jpg'
+  var url = [
+    'http://api.tocu.vn/image/egg-avatars/egg1.jpg',
+    'http://api.tocu.vn/image/egg-avatars/egg2.jpg',
+    'http://api.tocu.vn/image/egg-avatars/egg3.jpg',
+    'http://api.tocu.vn/image/egg-avatars/egg4.jpg',
+    'http://api.tocu.vn/image/egg-avatars/egg5.jpg',
+    'http://api.tocu.vn/image/egg-avatars/egg6.jpg',
+    'http://api.tocu.vn/image/egg-avatars/egg7.jpg',
+    'http://api.tocu.vn/image/egg-avatars/egg8.jpg',
+    'http://api.tocu.vn/image/egg-avatars/egg9.jpg',
+    'http://api.tocu.vn/image/egg-avatars/egg10.jpg',
+    'http://api.tocu.vn/image/egg-avatars/egg11.jpg',
+    'http://api.tocu.vn/image/egg-avatars/egg12.jpg',
+    'http://api.tocu.vn/image/egg-avatars/egg13.jpg',
+    'http://api.tocu.vn/image/egg-avatars/egg14.jpg',
+    'http://api.tocu.vn/image/egg-avatars/egg15.jpg',
+    'http://api.tocu.vn/image/egg-avatars/egg16.jpg'
   ];
 
-  return fileName[getRandomInt(0, fileName.length - 1)];
+  return url[getRandomInt(0, url.length - 1)];
 };
 
 function getRandomInt(min, max) {

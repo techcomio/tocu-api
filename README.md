@@ -12,6 +12,7 @@ Tổng hợp toàn bộ API tương tác với dữ liệu `api.tocu.vn` & kèm 
 
 ## APIs
 - [User](/docs/User.md)
+- [Box](/docs/Box.md)
 - [Product](/docs/Product.md)
 - [Like](/docs/Like.md)
 - [District](/docs/District.md)

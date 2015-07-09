@@ -4,6 +4,15 @@ var router = express.Router();
 
 var promise = require('bluebird');
 
+// Count all
+router.get('/count', function(req, res) {
+  models.Box.count()
+    .then(function(count) {
+      return res.status(200).json(count);
+    });
+});
+
+
 // List Box
 router.get('/', function(req, res) {
   models.Box.findAll()
