@@ -34,7 +34,9 @@ router.post('/', function(req, res, next) {
 
             if(img.size >= (totalpixel) * 0.16) {
               var encodeHQ = (1 - (totalpixel * 0.16) / img.size) * 100;
-              this.quality(encodeHQ); // chat luong anh
+              console.log(encodeHQ);
+              // this.quality(encodeHQ); // chat luong anh
+              this.quality(30); // chat luong anh
             }
 
             /* save local */

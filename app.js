@@ -88,7 +88,7 @@ var imgr = new IMGR();
 imgr.serve('./images/')
     .namespace('/image')
     .urlRewrite('/:path/:size/:file.:ext')
-    .whitelist([ '960x640', '640x426', '480x320', '320x213', '100x100' ])
+    .whitelist([ '960x640', '640x426', '480x320', '320x213', 'x320', 'x230', '192x130', '100x100', '100x', 'x100', '90x60' ])
     .using(app);
 
 
