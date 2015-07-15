@@ -15,7 +15,9 @@ router.get('/count', function(req, res) {
 
 // List Box
 router.get('/', function(req, res) {
-  models.Box.findAll()
+  models.Box.findAll({
+    order: '"priority" ASC'
+  })
     .then(function(boxes) {
       boxes = JSON.stringify(boxes);
 
@@ -44,7 +46,7 @@ router.get('/', function(req, res) {
 
         })
         .then(function(newBoxes) {
-          res.status(200).json(newBoxes);
+          return res.status(200).json(newBoxes);
         });
     });
 });
@@ -72,10 +74,10 @@ router.get('/:id', function(req, res) {
 router.post('/', function(req, res) {
   models.Box.create(req.body)
     .then(function(product) {
-      res.status(201).json(product);
+      return res.status(201).json(product);
     })
     .catch(function(error) {
-      res.status(400).json(error);
+      return res.status(400).json(error);
     });
 });
 
