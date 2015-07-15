@@ -9,6 +9,9 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.ENUM,
       values: ['product', 'article', 'photo']
     },
+    priority: {
+      type: DataTypes.INTEGER
+    },
     description: {
       type: DataTypes.STRING
     }
