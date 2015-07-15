@@ -1,12 +1,18 @@
 'use strict';
+var models = require('../models');
+var Promise = require('bluebird');
+
 module.exports = function(sequelize, DataTypes) {
   var Product = sequelize.define('Product', {
     name: {
-      type: DataTypes.STRING,
-      allowNull: false
+      type: DataTypes.STRING
     },
     description: DataTypes.TEXT,
     BoxId: DataTypes.INTEGER,
+    boxName: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
     code: DataTypes.STRING,
     status: {
       type: DataTypes.ENUM,
@@ -30,3 +36,4 @@ module.exports = function(sequelize, DataTypes) {
 
   return Product;
 };
+

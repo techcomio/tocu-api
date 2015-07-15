@@ -8,7 +8,7 @@
 
 | Name | Type | Description | Notes |
 | --- | --- | --- | --- |
-| `name` | String | Tên sản phẩm | required
+| `name` | String | Tên sản phẩm |
 | `description` | String | Mô tả sản phẩm | 
 | `BoxId` | Integer | Box ID | required
 | `status` | ENUM | Tình trạng sản phẩm. Một trong các giá trị `['Draft', 'Available', 'Suspended', 'Sold', 'Closed']` | Default is 'Available'
@@ -21,9 +21,10 @@
 ### Example
 
     {
-        "name": "Áo phông Nike",
+        "name": null,
         "description": "Nike chính hãng, 100% cotton. Siêu mát!!!",
         "BoxId": 3,
+        "boxName": "Áo phông",
         "code": "AP1",
         "status": "Available",
         "price": 120000,
@@ -56,6 +57,7 @@
         "name": "Chân váy trắng",
         "description": "tessttttt",
         "BoxId": 1,
+        "boxName": "Áo phông",
         "code": "CV1",
         "status": "Available",
         "price": 220000,
@@ -84,6 +86,7 @@
         "name": "Chân váy trắng",
         "description": "tessttttt",
         "BoxId": 1,
+        "boxName": "Áo phông",
         "code": "CV1",
         "status": "Available",
         "price": 220000,
@@ -118,6 +121,7 @@
       "name": "Chân váy trắng",
       "description": "test 2 tessttttt",
       "BoxId": 1,
+      "boxName": "Áo phông",
       "code": "CV1",
       "status": "Available",
       "price": 220000,
