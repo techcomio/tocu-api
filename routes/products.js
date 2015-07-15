@@ -27,7 +27,7 @@ router.get('/', function(req, res) {
       limit: limit
     })
     .then(function(result) {
-      res.status(200).json(result);
+      return res.status(200).json(result);
     });
 });
 
@@ -46,7 +46,7 @@ router.get('/box/:id', function(req, res) {
       limit: limit
     })
     .then(function(result) {
-      res.status(200).json(result);
+      return res.status(200).json(result);
     });
 });
 
@@ -61,23 +61,29 @@ router.get('/:id', function(req, res) {
     var product = JSON.parse(result)[0];
     product['likesCount'] = JSON.parse(result)[1];
     
-    res.status(200).json(product);
+    return res.status(200).json(product);
   })
   .catch(function(err) {
-    res.status(400).json(err);
+    return res.status(400).json(err);
   });
 });
 
 
 // Create a Product
 router.post('/', function(req, res) {
-  models.Product.create(req.body)
+  var params = req.body;
+  
+  BoxFindById(params.BoxId)
+  .then(function(box) {
+    params['boxName'] = box.name;
+      models.Product.create(params)
     .then(function(product) {
-      res.status(201).json(product);
-    })
-    .catch(function(error) {
-      res.status(400).json(error);
+      return res.status(201).json(product);
     });
+  })
+  .catch(function(err) {
+    return res.status(400).json(err);
+  });
 });
 
 // Functions
@@ -101,4 +107,14 @@ function ProductLikesCount(productId) {
       return likesCount;
     });
 }
+
+function BoxFindById(boxId) {
+  return new promise(function(resolve, reject) {
+    models.Box.findById(boxId)
+      .then(function(box) {
+        return resolve(box);
+      });
+  });
+}
+
 module.exports = router;
