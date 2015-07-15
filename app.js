@@ -22,7 +22,8 @@ products = require('./routes/products'),
 boxes = require('./routes/boxes'),
 boxes = require('./routes/boxes'),
 likes = require('./routes/likes'),
-images = require('./routes/images');
+images = require('./routes/images'),
+ships = require('./routes/ships');
 
 // models
 var models = require('./models');
@@ -125,7 +126,8 @@ app
   .use('/product', products)
   .use('/box', boxes)
   .use('/like', likes)
-  .use('/image', images);
+  .use('/image', images)
+  .use('/ship', ships);
 
 
 
