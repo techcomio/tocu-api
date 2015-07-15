@@ -15,19 +15,19 @@ router.post('/', function(req, res) {
     if(created === true) {
       res.status(201).json(user);
     } else {
-      res.status(400).json({message: 'Bạn đã Like ' + type + ' id ' + itemId})
+      return res.status(400).json({message: 'Bạn đã Like ' + type + ' id ' + itemId});
     }
   })
   .catch(function(error) {
-    res.status(400).json(error);
-  })
+    return res.status(400).json(error);
+  });
 });
 
 // Get all Like
 router.get('/', function(req, res) {
   models.Like.findAll()
   .then(function(users) {
-    res.status(200).json(users);
+    return res.status(200).json(users);
   });
 });
 
@@ -38,7 +38,7 @@ router.get('/:type/:id', function(req, res) {
 
   models.Like.count({where: {type: type, itemId: id}})
   .then(function(result) {
-    res.status(200).json(result);
+    return res.status(200).json(result);
   });
 });
 

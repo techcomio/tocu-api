@@ -6,7 +6,7 @@ var router = express.Router();
 router.get('/', function(req, res) {
   models.Model.findAll()
   .then(function(result) {
-    res.status(200).json(result);
+    return res.status(200).json(result);
   });
 });
 // Create a Model
@@ -18,11 +18,11 @@ router.post('/', function(req, res) {
     if(created === true) {
       res.status(201).json(model);
     } else {
-      res.status(400).json({message: name + ' đã tồn tại.'})
+      return res.status(400).json({message: name + ' đã tồn tại.'})
     }
   })
   .catch(function(error) {
-    res.status(400).json(error);
+    return res.status(400).json(error);
   })
 });
 
