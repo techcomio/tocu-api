@@ -42,7 +42,7 @@ module.exports = function(sequelize, DataTypes) {
   }, {
     classMethods: {
       associate: function(models) {
-        // User.belongsTo(models.Model);
+
       }
     }
   });
@@ -57,12 +57,12 @@ module.exports = function(sequelize, DataTypes) {
         user.token = rand(256, 32);
       })
       .then(function() {
-          if (!user.avatarUrl) {
-            user.avatarUrl = randomAvatar();
-          }
+        if (!user.avatarUrl) {
+          user.avatarUrl = randomAvatar();
+        }
       })
-      .finally(function(){
-          callback(null, user);
+      .finally(function() {
+        callback(null, user);
       })
       .catch(function(error) {
         console.log('hashPassword error: ', error);
@@ -76,7 +76,9 @@ function hashPassword(password) {
   return new Promise(function(resolve, reject) {
     bcrypt.genSalt(10, function(err, salt) {
       bcrypt.hash(password, salt, function(error, hash) {
-        if(error) {reject(error);}
+        if (error) {
+          reject(error);
+        }
         else {
           resolve(hash);
         }

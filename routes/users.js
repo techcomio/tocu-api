@@ -28,4 +28,9 @@ router.get('/', policies.isAuthenticated, policies.isLevel4to10, function(req, r
   });
 });
 
+// Get me
+router.get('/me', policies.isAuthenticated, function(req, res) {
+  return res.status(200).json(req.user);
+});
+
 module.exports = router;
