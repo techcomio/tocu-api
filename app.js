@@ -14,19 +14,22 @@ var bcrypt = require('bcrypt');
 
 // Routes
 var token = require('./routes/token'),
-users = require('./routes/users'),
-districts = require('./routes/districts'),
-cities = require('./routes/cities'),
-shopModels = require('./routes/models'),
-products = require('./routes/products'),
-boxes = require('./routes/boxes'),
-boxes = require('./routes/boxes'),
-likes = require('./routes/likes'),
-images = require('./routes/images'),
-ships = require('./routes/ships');
+  users = require('./routes/users'),
+  districts = require('./routes/districts'),
+  cities = require('./routes/cities'),
+  shopModels = require('./routes/models'),
+  products = require('./routes/products'),
+  boxes = require('./routes/boxes'),
+  boxes = require('./routes/boxes'),
+  likes = require('./routes/likes'),
+  images = require('./routes/images'),
+  ships = require('./routes/ships');
 
 // models
 var models = require('./models');
+
+// Redis
+var redisHelper = require('./services/redisHelper');
 
 
 // Passport Local
@@ -35,46 +38,52 @@ passport.use(new LocalStrategy({
     passwordField: 'password'
   },
   function(mobilePhone, password, done) {
-    models.User.findOne({where: {mobilePhone: mobilePhone}})
-    .then(function(user) {
-      if (!user) { return done(null, false, {
-          message: 'Not found'
-        }); }
-      bcrypt.compare(password, user.password, function(err, res) {
-        if (!res) return done(null, false, {
-          message: 'Invalid Password'
+    models.User.findOne({
+        where: {
+          mobilePhone: mobilePhone
+        }
+      })
+      .then(function(user) {
+        if (!user) {
+          return done(null, false, {
+            message: 'Not found'
+          });
+        }
+        bcrypt.compare(password, user.password, function(err, res) {
+          if (!res) return done(null, false, {
+            message: 'Invalid Password'
+          });
+          return done(null, user);
         });
-        return done(null, user);
+      })
+      .catch(function(error) {
+        return done(error);
       });
-    })
-    .catch(function(error) {
-      return done(error);
-    });
   }
 ));
 
 // Passport HTTP Bearer
 passport.use(new BearerStrategy(
-  function(token, done) {
-
-    models.User.findOne({where: {token: token} })
-    .then(function(user) {
-      if (!user) { return done(null, false); }
-      return done(null, user, { scope: 'all' });
-    })
-    .catch(function(error) {
-      return done(error);
-    });
+  function(access_token, done) {
+    redisHelper.getDataByToken(access_token)
+      .then(function(user) {
+        return done(null, user, {
+          scope: 'all'
+        });
+      })
+      .catch(function(error) {
+        return done(error);
+      });
   }
 ));
 
 // Enables CORS
 var enableCORS = function(req, res, next) {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
-    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With, *');
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With, *');
 
-    next();
+  next();
 };
 
 var app = express();
@@ -87,10 +96,10 @@ Example: http://tocu-api-dev-tranduchieu.c9.io/image/100x100/c8c402e41f893cdafcb
 */
 var imgr = new IMGR();
 imgr.serve('./images/')
-    .namespace('/image')
-    .urlRewrite('/:path/:size/:file.:ext')
-    .whitelist([ '960x640', '640x426', '480x320', '468x', 'x468', '320x213', '320x', 'x320', 'x230', '230x', '192x130', '100x100', '100x', 'x100', '90x60', '50x50' ])
-    .using(app);
+  .namespace('/image')
+  .urlRewrite('/:path/:size/:file.:ext')
+  .whitelist(['960x640', '640x426', '480x320', '468x', 'x468', '320x213', '320x', 'x320', 'x230', '230x', '192x130', '100x100', '100x', 'x100', '90x60', '50x50'])
+  .using(app);
 
 
 app
@@ -102,12 +111,12 @@ app
   // .use(multer())
   .use(multer({ // https://github.com/expressjs/multer
     dest: './images/',
-    rename: function (fieldname, filename) {
+    rename: function(fieldname, filename) {
       var key = crypto.randomBytes(10).toString('hex');
       return key + '-' + filename.replace(/\W+/g, '-').toLowerCase();
     },
     onFileUploadStart: function(file) {
-      if(! /\/(png|gif|jpg|jpeg|pjpeg)$/i.test(file.mimetype)) {
+      if (!/\/(png|gif|jpg|jpeg|pjpeg)$/i.test(file.mimetype)) {
         return false;
       }
     },
@@ -116,7 +125,9 @@ app
     },
     inMemory: true //This is important. It's what populates the buffer.
   }))
-  .use('/image', express.static(__dirname + "/images", {maxage: 8640000}))
+  .use('/image', express.static(__dirname + "/images", {
+    maxage: 8640000
+  }))
   // .use('/assets', express.static(path.join(__dirname, 'assets')))
   .use('/token', token)
   .use('/user', users)
