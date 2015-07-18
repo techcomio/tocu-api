@@ -60,6 +60,8 @@ var provices = {
   //NT
   'Hà Nội': 1,
   // 100 KM
+  'Bắc Ninh': 2,
+  'Hưng Yên': 2,
   'Nam Định': 2,
   'Hà Nam': 2,
   'Hòa Bình': 2,
@@ -68,6 +70,7 @@ var provices = {
   'Bắc Giang': 2,
   'Phú Thọ': 2,
   'Thái Nguyên': 2,
+  'Vĩnh Phúc': 2,
 
   // 300 KM
   'Nghệ An': 3,
@@ -77,14 +80,15 @@ var provices = {
   'Lạng Sơn': 3,
   'Tuyên Quang': 3,
   'Yên Bái': 3,
-  'Bắc Cạn': 3,
+  'Bắc Kạn': 3,
   'Cao Bằng': 3,
+  'Thái Bình': 3,
 
   // more than 300KM
   'Hà Tĩnh': 4,
   'Quảng Bình': 4,
   'Quảng Trị': 4,
-  'Thừa Thiên-Huế': 4,
+  'Thừa Thiên - Huế': 4,
   'Quảng Nam': 4,
   'Quảng Ngãi': 4,
   'Bình Định': 4,
@@ -101,7 +105,7 @@ var provices = {
   'Tây Ninh': 4,
   'Bình Dương': 4,
   'Đồng Nai': 4,
-  'Bà Rịa-Vũng Tàu': 4,
+  'Bà Rịa - Vũng Tàu': 4,
   'Long An': 4,
   'Tiền Giang': 4,
   'Bến Tre': 4,
@@ -126,7 +130,7 @@ var provices = {
   // Đà Nẵng,
 
   'Đà Nẵng': 5,
-  'Hồ Chí Minh': 6
+  'TP Hồ Chí Minh': 6
 };
 
 function col(province) {
