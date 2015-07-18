@@ -11,7 +11,6 @@ Tạo một Like
 | --- | --- | --- | --- |
 | `type` | ENUM | Dạng item. `['box', 'product', 'article', 'photo']` |
 | `itemId` | Integer | Id của item |
-| `UserId` | Integer | Id của User ấn Like |
 
 
 ### Example
@@ -20,8 +19,7 @@ Tạo một Like
 
     {
         "type": "product",
-        "itemId": 1,
-        "UserId": 1
+        "itemId": 1
     }
 
 ### Response
@@ -51,3 +49,12 @@ Tạo một Like
 
     1
 
+## Check Like already exists
+
+    GET http://api-dev.tocu.vn/like/me/:type/:itemId
+    
+
+Return | Description
+------- | --------------
+`true` | Đã tồn tại
+`false` | Chưa tồn tại
