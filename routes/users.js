@@ -21,7 +21,7 @@ router.post('/', function(req, res) {
 });
 
 // Get all user
-router.get('/', policies.isAuthenticated, policies.isLevel4to10, function(req, res) {
+router.get('/', policies.isAuthenticated, policies.isLevel100, function(req, res) {
   models.User.findAll()
   .then(function(users) {
     res.status(200).json(users);

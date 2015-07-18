@@ -59,7 +59,7 @@ router.get('/me/:type/:itemId', policies.isAuthenticated, function(req, res) {
 });
 
 // Get all Like
-router.get('/', policies.isAuthenticated, policies.isLevel4to10, function(req, res) {
+router.get('/', policies.isAuthenticated, policies.isLevel100, function(req, res) {
   models.Like.findAll()
     .then(function(users) {
       return res.status(200).json(users);
@@ -67,7 +67,7 @@ router.get('/', policies.isAuthenticated, policies.isLevel4to10, function(req, r
 });
 
 // Count Likes by Post
-router.get('/:type/:id', function(req, res) {
+router.get('/:type/:id', policies.isAuthenticated, function(req, res) {
   var type = req.params.type,
     id = req.params.id;
 
