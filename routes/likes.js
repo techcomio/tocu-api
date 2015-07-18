@@ -7,9 +7,10 @@ var router = express.Router();
 // Create a Like
 router.post('/', function(req, res) {
   var type = req.body.type,
-  itemId = req.body.itemId;
+  itemId = req.body.itemId,
+  UserId = req.body.UserId;
 
-  models.Like.findOrCreate({where: {type: type, itemId: itemId}, defaults: req.body})
+  models.Like.findOrCreate({where: {type: type, itemId: itemId, UserId: UserId}, defaults: req.body})
   .spread(function(user, created) {
 
     if(created === true) {
