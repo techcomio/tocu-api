@@ -7,18 +7,16 @@ module.exports = function(sequelize, DataTypes) {
     },
     type: {
       type: DataTypes.ENUM,
-      values: ['product', 'article', 'photo']
+      values: ['product', 'article', 'photo'],
+      allowNull: false
     },
     priority: {
       type: DataTypes.INTEGER
     },
-    description: {
-      type: DataTypes.STRING
-    }
   }, {
     classMethods: {
       associate: function(models) {
-        Box.hasMany(models.Product)
+        Box.hasMany(models.Product);
       }
     }
   });

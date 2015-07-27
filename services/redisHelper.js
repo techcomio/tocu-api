@@ -6,6 +6,16 @@ redisClient.on('error', function(err) {
 	throw err;
 });
 
+exports.set = function(key, value) {
+	return new promise(function(resolve, reject) {
+		redisClient.set(key, JSON.stringify(value), function(err, reply) {
+			if(err) return reject(err);
+			return resolve(reply);
+		})
+	});
+};
+
+
 /*
  * Stores a token with user data for a ttl period of time
  * token: String - Token used as the key in redis 

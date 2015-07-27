@@ -23,7 +23,8 @@ var token = require('./routes/token'),
   boxes = require('./routes/boxes'),
   likes = require('./routes/likes'),
   images = require('./routes/images'),
-  ships = require('./routes/ships');
+  ships = require('./routes/ships'),
+  orders = require('./routes/orders');
 
 // models
 var models = require('./models');
@@ -98,7 +99,7 @@ var imgr = new IMGR();
 imgr.serve('./images/')
   .namespace('/image')
   .urlRewrite('/:path/:size/:file.:ext')
-  .whitelist(['960x640', '640x426', '480x320', '468x', 'x468', '320x213', '320x', 'x320', 'x230', '230x', '192x130', '100x100', '100x', 'x100', '90x60', '50x50'])
+  .whitelist(['960x640', '640x426', '480x320', '468x', 'x468', '320x213', '320x', 'x320', 'x230', '230x', '220x220', '220x53', '192x130', '100x100', '100x', 'x100', '90x60', '50x50'])
   .using(app);
 
 
@@ -138,7 +139,8 @@ app
   .use('/box', boxes)
   .use('/like', likes)
   .use('/image', images)
-  .use('/ship', ships);
+  .use('/ship', ships)
+  .use('/order', orders);
 
 
 

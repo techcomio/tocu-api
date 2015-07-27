@@ -16,7 +16,8 @@ module.exports = function(sequelize, DataTypes) {
     code: DataTypes.STRING,
     status: {
       type: DataTypes.ENUM,
-      values: ['Draft', 'Available', 'Suspended', 'Sold', 'Closed']
+      values: ['draft', 'available', 'suspended', 'sold', 'closed'],
+      defaultValue: 'available'
     },
     price: DataTypes.INTEGER,
     salePrice: DataTypes.INTEGER,

@@ -1,7 +1,6 @@
 'use strict';
 
 var bcrypt = require('bcrypt');
-var rand = require('csprng');
 var Promise = require("bluebird");
 
 var randomAvatar = require('../services/randomAvatar');
@@ -24,21 +23,15 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.STRING,
       allowNull: false
     },
-    token: {
-      type: DataTypes.STRING
-    },
     avatarUrl: DataTypes.STRING,
     isVerifyMobilePhone: DataTypes.BOOLEAN,
     level: DataTypes.INTEGER,
-    point: DataTypes.INTEGER,
-    coin: DataTypes.INTEGER,
     company: DataTypes.STRING,
     address: DataTypes.STRING,
     district: DataTypes.STRING,
     districtIsUrban: DataTypes.BOOLEAN,
     city: DataTypes.STRING,
-    createdBy: DataTypes.JSON,
-    updatedBy: DataTypes.JSON
+    noteBySaleman: DataTypes.TEXT
   }, {
     classMethods: {
       associate: function(models) {
@@ -52,9 +45,6 @@ module.exports = function(sequelize, DataTypes) {
     hashPassword(user.password)
       .then(function(hash) {
         user.password = hash;
-      })
-      .then(function() {
-        user.token = rand(256, 32);
       })
       .then(function() {
         if (!user.avatarUrl) {

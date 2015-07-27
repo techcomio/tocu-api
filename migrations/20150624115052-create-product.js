@@ -22,8 +22,8 @@ module.exports = {
       },
       status: {
         type: Sequelize.ENUM,
-        values: ['Draft', 'Available', 'Suspended', 'Sold', 'Closed'],
-        defaultValue: 'Available'
+        values: ['draft', 'available', 'suspended', 'sold', 'closed'],
+        defaultValue: 'available'
       },
       price: {
         type: Sequelize.INTEGER

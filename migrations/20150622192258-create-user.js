@@ -60,12 +60,6 @@ module.exports = {
       city: {
         type: Sequelize.STRING
       },
-      createdBy: {
-        type: Sequelize.JSON
-      },
-      updatedBy: {
-        type: Sequelize.JSON
-      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

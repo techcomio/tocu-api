@@ -12,12 +12,12 @@ router.post('/', function(req, res) {
     if(created === true) {
       res.status(201).json(user);
     } else {
-      res.status(400).json({message: 'Số điện thoại đã tồn tại.'})
+      res.status(400).json({message: 'Số điện thoại đã tồn tại.'});
     }
   })
   .catch(function(error) {
     res.status(400).json(error);
-  })
+  });
 });
 
 // Get all user

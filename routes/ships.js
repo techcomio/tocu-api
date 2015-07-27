@@ -42,7 +42,7 @@ router.get('/', function(req, res) {
 
       return res.status(200).json({
         cost: Cost,
-        shippingMethod: 'CPN Viettel'
+        shippingMethod: 'delivery'
       });
     });
 });
