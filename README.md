@@ -18,6 +18,7 @@ Tổng hợp toàn bộ API tương tác với dữ liệu `api.tocu.vn` & kèm 
 - [District](/docs/District.md)
 - [Ship](/docs/Ship.md)
 - [Model](/docs/Model.md)
+- [Order](/docs/Order.md)
 
 ## Response Codes
 | Code | Name | Description |
