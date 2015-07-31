@@ -2,6 +2,7 @@
 const models = require('../models');
 const policies = require('../services/policies');
 const redisHelper = require('../services/redisHelper');
+const productHelper = require('../services/productHelper');
 
 const promise = require('bluebird');
 
@@ -25,6 +26,7 @@ router.post('/', policies.isAuthenticated, function(req, res) {
   models.Order.create(OrderParams)
     .then(function(order) {
       let orderJSON = order.toJSON();
+      console.log('OrderId:--->' + orderJSON.id);
 
       // Tạo các OrderLines kết hợp cập nhật User address với promise all
       return promise.all([
@@ -36,6 +38,7 @@ router.post('/', policies.isAuthenticated, function(req, res) {
           return res.status(201).json(orderJSON);
         })
         .catch(function(err) {
+          console.log('Errorrrrr: ' + err);
           order.destroy().then(function() {
             console.log('Order ID ' + orderJSON.id + ' deleted');
             return res.status(400).json(err);
@@ -81,23 +84,19 @@ function OrderLinesBulkCreate(OrderId, UserId, OrderLinesParams) {
         // Check product status
         let productId = OrderLine.product.id;
 
-        return productStatus(productId)
-          .then(function(status) {
-            if (status == 'available') {
-              changeProductToSuspended(productId);
+        return productHelper.checkProductForOrder(productId)
+          .then(function(product) {
+            if (product.status == 'available') {
               OrderLine['status'] = 'open';
             }
-            else if (status == 'suspended') {
+            else {
               OrderLine['status'] = 'suspended';
             }
-            else {
-              reject('Product ' + productId + ' not available');
-            }
-
-            return OrderLine;
-          })
-          .then(function(OrderLine) {
-
+            
+            OrderLine.product['name'] = product.boxName;
+            OrderLine.product['code'] = product.code;
+            OrderLine.product['imageUrl'] = product.images[0] || null;
+            
             // findOrCreate OrderLine
             return models.OrderLine.findOrCreate({
                 where: {
@@ -110,68 +109,43 @@ function OrderLinesBulkCreate(OrderId, UserId, OrderLinesParams) {
               })
               .spread(function(result, created) {
 
+                // Tạo OrderLine thành công
                 if (created === true) {
                   return result;
                 }
                 else {
                   // User đã order sản phẩm này
-                  reject({
+                  throw {
                     message: 'Bạn đã đặt hàng sản phẩm ' + OrderLine.product.name + ' - ' + OrderLine.product.code
-                  });
+                  };
                 }
               })
               .catch(function(err) {
-                reject(err);
+               throw err;
               });
           })
           .catch(function(err) {
-            reject(err);
+            throw err;
           });
 
       })
       .then(function(result) {
-        return resolve(result);
+        // Change products status to suppended
+        promise.map(result, function(OrderLineResult) {
+          // let productId = OrderLineResult.product.id;
+          productHelper.changeProductStatus(OrderLineResult.product.id, 'suspended')
+            .then(function() {
+              return resolve(result);
+            })
+            .catch(function(err) {
+              throw err;
+            });
+        });
       })
       .catch(function(err) {
         return reject(err);
       });
   });
-}
-
-function productStatus(productId) {
-  return new promise(function(resolve, reject) {
-    models.Product.findById(productId)
-      .then(function(product) {
-        product = JSON.parse(JSON.stringify(product));
-
-        if (!product) {
-          reject({
-            message: 'Sản phẩm ID ' + productId + ' không tồn tại'
-          });
-        }
-
-        return resolve(product.status);
-      })
-      .catch(function(err) {
-        return reject(err);
-      });
-  });
-}
-
-function changeProductToSuspended(productId) {
-  models.Product.update({
-      status: 'suspended'
-    }, {
-      where: {
-        id: productId
-      }
-    })
-    .then(function(result) {
-      return console.log(result);
-    })
-    .catch(function(err) {
-      return console.log(err);
-    });
 }
 
 function updateUserAdress(UserInfo, OrderShippingAddress) {
