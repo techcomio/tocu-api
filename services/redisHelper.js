@@ -23,15 +23,15 @@ exports.set = function(key, value) {
  * ttl: Number - Time to Live in seconds (default: 24Hours)
  * callback: Function
  */
-exports.setTokenWithData = function(token, data, timeToLive) {
+exports.setex = function(token, data, timeToLive) {
 	return new promise(function(resolve, reject) {
 		if (token == null) throw new Error('Token is null');
-		if (data != null && typeof data !== 'object') throw new Error('data is not an Object');
+		if (data != null && typeof data !== 'object') return reject('data is not an Object');
 
 		var userData = data || {};
 		userData._ts = new Date();
 
-		if (timeToLive != null && typeof timeToLive !== 'number') throw new Error('TimeToLive is not a Number');
+		if (timeToLive != null && typeof timeToLive !== 'number') return reject('TimeToLive is not a Number');
 
 
 		redisClient.setex(token, timeToLive, JSON.stringify(userData), function(err, reply) {
@@ -41,7 +41,7 @@ exports.setTokenWithData = function(token, data, timeToLive) {
 				return resolve(true);
 			}
 			else {
-				return reject(new Error('Token not set in redis'));
+				return reject('Token not set in redis');
 			}
 		});
 	});
@@ -52,15 +52,14 @@ exports.setTokenWithData = function(token, data, timeToLive) {
  * token: String - token used as the key in redis
  * callback: Function - returns data
  */
-exports.getDataByToken = function(token) {
+exports.get = function(token) {
 	return new promise(function(resolve, reject) {
-		if (token == null) reject(new Error('Token is null'));
+		if (token == null) reject('Data is null');
 
 		redisClient.get(token, function(err, userData) {
 			if (err) return reject(err);
 
-			if (userData != null) return resolve(JSON.parse(userData));
-			else return reject(new Error('Token Not Found'));
+			return resolve(JSON.parse(userData));
 		});
 	});
 };
@@ -69,7 +68,7 @@ exports.getDataByToken = function(token) {
  * Expires a token by deleting the entry in redis
  * callback(null, true) if successfuly deleted
  */
-exports.expireToken = function(token) {
+exports.del = function(token) {
 	return new promise(function(resolve, reject) {
 		if (token == null) return reject(new Error('Token is null'));
 

@@ -24,7 +24,8 @@ var token = require('./routes/token'),
   likes = require('./routes/likes'),
   images = require('./routes/images'),
   ships = require('./routes/ships'),
-  orders = require('./routes/orders');
+  orders = require('./routes/orders'),
+  orderlines = require('./routes/orderlines');
 
 // models
 var models = require('./models');
@@ -66,7 +67,7 @@ passport.use(new LocalStrategy({
 // Passport HTTP Bearer
 passport.use(new BearerStrategy(
   function(access_token, done) {
-    redisHelper.getDataByToken(access_token)
+    redisHelper.get(access_token)
       .then(function(user) {
         return done(null, user, {
           scope: 'all'
@@ -140,7 +141,8 @@ app
   .use('/like', likes)
   .use('/image', images)
   .use('/ship', ships)
-  .use('/order', orders);
+  .use('/order', orders)
+  .use('/orderline', orderlines);
 
 
 

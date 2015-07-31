@@ -29,7 +29,7 @@ router.post('/', passport.authenticate('local', {
   user['access_token'] = access_token;
   user['expires_in'] = timeToLive;
 
-  redisHelper.setTokenWithData(access_token, user, timeToLive)
+  redisHelper.setex(access_token, user, timeToLive)
     .then(function(reply) {
       return res.status(200).json(user);
     })
@@ -43,7 +43,7 @@ router.post('/', passport.authenticate('local', {
 router.get('/expire', function(req, res) {
   var access_token = extractTokenFromHeader(req.headers);
 
-  redisHelper.expireToken(access_token)
+  redisHelper.del(access_token)
     .then(function(reply) {
       return res.status(200).json(reply);
     })
