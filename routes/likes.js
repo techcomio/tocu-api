@@ -8,7 +8,7 @@ var router = express.Router();
 router.post('/', policies.isAuthenticated, function(req, res) {
   var type = req.body.type,
     itemId = req.body.itemId,
-    UserId = req.user.UserId;
+    UserId = req.user.id;
 
   models.Like.findOrCreate({
       where: {
