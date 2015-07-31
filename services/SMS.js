@@ -1,100 +1,107 @@
-var esmsConfig = require(__dirname + '/../config/esms.json')[env]);
+'use strict';
+const env = process.env.NODE_ENV || 'development';
+const esmsConfig = require(__dirname + '/../config/esms.json')[env];
+const promise = require('bluebird');
 
 function esmsCreateSendByRandomBody(phone, msg) {
-    var body = '<RQST>' +
-        '<APIKEY>' + esmsConfig.esmsApiKey + '</APIKEY>' +
-        '<SECRETKEY>' + esmsConfig.esmsSecretKey + '</SECRETKEY>' +
-        '<ISFLASH>0</ISFLASH>' +
-        '<UNICODE>0</UNICODE>' +
-        '<CONTENT>' + msg + '</CONTENT>' +
-        '<CONTACTS>';
+  var body = '<RQST>' +
+    '<APIKEY>' + esmsConfig.esmsApiKey + '</APIKEY>' +
+    '<SECRETKEY>' + esmsConfig.esmsSecretKey + '</SECRETKEY>' +
+    // '<SMSTYPE>4</SMSTYPE>' +
+    '<ISFLASH>0</ISFLASH>' +
+    '<UNICODE>0</UNICODE>' +
+    '<CONTENT>' + msg + '</CONTENT>' +
+    '<CONTACTS>';
 
-    if (typeof phone === 'string') {
-        phone = [phone];
-    }
-    if (Object.prototype.toString.call(phone) !== "[object Array]") {
-        return false;
-    }
+  if (typeof phone === 'string') {
+    phone = [phone];
+  }
+  if (Object.prototype.toString.call(phone) !== "[object Array]") {
+    return false;
+  }
 
-    for (var i = 0; i < phone.length; i++) {
-        body = body +
-            '<CUSTOMER>' +
-            '<PHONE>' + phone[i] + '</PHONE>' +
-            '</CUSTOMER>';
-    }
+  for (var i = 0; i < phone.length; i++) {
+    body = body +
+      '<CUSTOMER>' +
+      '<PHONE>' + phone[i] + '</PHONE>' +
+      '</CUSTOMER>';
+  }
 
-    body = body + '</CONTACTS>' + '</RQST>';
-    return body;
+  body = body + '</CONTACTS>' + '</RQST>';
+  return body;
 }
 
-var http = require('http');
+let http = require('http');
 module.exports = {
-    send: function(phone, code, callback) {
-        var data = esmsCreateSendByRandomBody(phone, code);
-        var postRequest = {
-            host: esmsConfig.esmsHost,
-            path: esmsConfig.esmsSendByRandomPath,
-            method: 'POST',
-            headers: {
-                'Cookie': 'cookie',
-                'Content-Type': 'text/plain',
-            }
-        };
+  send: function(phone, code) {
+    return new promise(function(resolve, reject) {
+      let data = esmsCreateSendByRandomBody(phone, code);
+      let postRequest = {
+        host: esmsConfig.esmsHost,
+        path: esmsConfig.esmsSendByRandomPath,
+        method: 'POST',
+        headers: {
+          'Cookie': 'cookie',
+          'Content-Type': 'text/plain',
+        }
+      };
 
-        var req = http.request(postRequest, function(res) {
-            var buffer = "";
+      let req = http.request(postRequest, function(res) {
+        let buffer = "";
 
-            res.on("data", function(data) {
-                buffer = buffer + data;
-            });
-            res.on("end", function() {
-                if (callback)
-                    callback(esmsParseRandomResult(buffer));
-            });
+        res.on("data", function(data) {
+          buffer = buffer + data;
         });
-        req.on('error', function(e) {
-            console.log('problem with request: ' + e.message);
+        res.on("end", function() {
+          // if (callback)
+            // callback(esmsParseRandomResult(buffer));
+          return resolve(esmsParseRandomResult(buffer));
         });
-        req.write(data);
-        req.end();
-    },
+      });
+      req.on('error', function(e) {
+        return reject('problem with request: ' + e.message);
+      });
+      req.write(data);
+      req.end();
+    })
+  },
 
-    // Templates
-    sendAccount: function(phone, password) {
-        var code = '[To Cu] Tai khoan cua ban vua duoc tao tai www.tocu.vn. Su dung so dien thoai cua ban cung mat khau: ' + password + ' de dang nhap.';
-        return this.send(phone, code);
-    }
+  // Templates
+  sendAccount: function(phone, password) {
+    let code = '[To Cu] Tai khoan cua ban vua duoc tao tai www.tocu.vn. Su dung so dien thoai cua ban cung mat khau: ' + password + ' de dang nhap.';
+    return this.send(phone, code);
+  }
 };
 
 
 function esmsParseRandomResult(result) {
-    var json = {};
+  let json = {};
 
-    for (var i = 0; i < esmsRandomResult.length; i++) {
-        elem = esmsRandomResult[i];
-        var start = result.indexOf(elem.StartTag) + elem.StartTag.length;
-        var end = result.indexOf(elem.EndTag);
-        if (end > 0 && start > 0) {
-            json[elem.Name] = result.slice(start, end);
-        }
-
+  for (var i = 0; i < esmsRandomResult.length; i++) {
+    let elem = esmsRandomResult[i];
+    let start = result.indexOf(elem.StartTag) + elem.StartTag.length;
+    let end = result.indexOf(elem.EndTag);
+    if (end > 0 && start > 0) {
+      json[elem.Name] = result.slice(start, end);
     }
 
-    return json;
+  }
+
+  return json;
 }
 
-var esmsRandomResult = [{
-    StartTag: '<CodeResult>',
-    EndTag: '</CodeResult>',
-    Name: 'CodeResult',
+let esmsRandomResult = [{
+  StartTag: '<CodeResult>',
+  EndTag: '</CodeResult>',
+  Name: 'CodeResult',
 }, {
 
-    StartTag: '<SMSID>',
-    EndTag: '</SMSID>',
-    Name: 'SMSID',
+  StartTag: '<SMSID>',
+  EndTag: '</SMSID>',
+  Name: 'SMSID',
 }, {
 
-    StartTag: '<ErrorMessage>',
-    EndTag: '</ErrorMessage>',
-    Name: 'ErrorMessage'
+  StartTag: '<ErrorMessage>',
+  EndTag: '</ErrorMessage>',
+  Name: 'ErrorMessage'
 }];
