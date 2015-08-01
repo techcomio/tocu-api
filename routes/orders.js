@@ -1,4 +1,5 @@
 'use strict';
+const queryHelper = require('../services/queryHelper');
 const models = require('../models');
 const policies = require('../services/policies');
 const redisHelper = require('../services/redisHelper');
@@ -74,6 +75,27 @@ router.get('/:id', policies.isAuthenticated, function(req, res) {
     });
 });
 
+// Query orders
+router.get('/', policies.isAuthenticated, queryHelper, function(req, res) {
+  console.log(req.user);
+  if (req.user.level <= 9) {
+    req.filters['UserId'] = req.user.id;
+  }
+  models.Order.findAll({
+      where: req.filters,
+      include: req.include,
+      offset: req.skip,
+      limit: req.limit,
+      order: req.sort
+    })
+    .then(function(result) {
+      return res.status(200).json(result);
+    })
+    .catch(function(err) {
+      return res.status(400).json(err);
+    })
+});
+
 // Functions
 function OrderLinesBulkCreate(OrderId, UserId, OrderLinesParams) {
   return new promise(function(resolve, reject) {
@@ -92,11 +114,11 @@ function OrderLinesBulkCreate(OrderId, UserId, OrderLinesParams) {
             else {
               OrderLine['status'] = 'suspended';
             }
-            
+
             OrderLine.product['name'] = product.boxName;
             OrderLine.product['code'] = product.code;
             OrderLine.product['imageUrl'] = product.images[0] || null;
-            
+
             // findOrCreate OrderLine
             return models.OrderLine.findOrCreate({
                 where: {
@@ -121,7 +143,7 @@ function OrderLinesBulkCreate(OrderId, UserId, OrderLinesParams) {
                 }
               })
               .catch(function(err) {
-               throw err;
+                throw err;
               });
           })
           .catch(function(err) {

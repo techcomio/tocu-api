@@ -19,26 +19,21 @@ router.get('/count', function(req, res) {
 });
 
 // List Products
-router.get('/', function(req, res) {
-  let skip = req.query.skip || 0,
-    limit = req.query.limit || 20,
-    filters = req.query.filters,
-    sort = req.query.sort;
+router.get('/', queryHelper, function(req, res) {
 
-  let whereObj = queryHelper.extractFilters(filters);
-  let sortArray = queryHelper.extractSort(sort);
-  // if (req.query.)
-  console.log(sort);
   models.Product.findAll({
-      where: whereObj,
-      include: [models.Box],
-      offset: skip,
-      limit: limit,
-      order: sortArray
+      where: req.filters,
+      include: req.include,
+      offset: req.skip,
+      limit: req.limit,
+      order: req.sort
     })
     .then(function(result) {
       return res.status(200).json(result);
-    });
+    })
+    .catch(function(err) {
+      return res.status(400).json(err);
+    })
 });
 
 // List Products by Box
