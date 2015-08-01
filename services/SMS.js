@@ -7,7 +7,7 @@ function esmsCreateSendByRandomBody(phone, msg) {
   var body = '<RQST>' +
     '<APIKEY>' + esmsConfig.esmsApiKey + '</APIKEY>' +
     '<SECRETKEY>' + esmsConfig.esmsSecretKey + '</SECRETKEY>' +
-    // '<SMSTYPE>4</SMSTYPE>' +
+    '<SMSTYPE>4</SMSTYPE>' +
     '<ISFLASH>0</ISFLASH>' +
     '<UNICODE>0</UNICODE>' +
     '<CONTENT>' + msg + '</CONTENT>' +
