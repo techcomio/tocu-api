@@ -4,6 +4,7 @@ const policies = require('../services/policies');
 const SMS = require('../services/SMS');
 const redisHelper = require('../services/redisHelper');
 const crypto = require('crypto');
+const rand = require('csprng');
 
 const promise = require('bluebird');
 
@@ -12,7 +13,7 @@ const express = require('express');
 const router = express.Router();
 
 // Create User
-router.post('/', function(req, res) {
+router.post('/', function(req, res, next) {
   models.User.findOrCreate({
       where: {
         mobilePhone: req.body.mobilePhone
@@ -22,16 +23,38 @@ router.post('/', function(req, res) {
     .spread(function(user, created) {
 
       if (created === true) {
-        res.status(201).json(user);
+        // res.status(201).json(user);
+        req.user = user;
+        return next();
       }
       else {
-        res.status(400).json({
+        return res.status(400).json({
           message: 'Số điện thoại đã tồn tại.'
         });
       }
     })
     .catch(function(error) {
-      res.status(400).json(error);
+      return res.status(400).json(error);
+    });
+}, function(req, res) {
+  console.log(req.user);
+  let access_token = rand(256, 32);
+  let timeToLive = 60 * 60 * 24;
+
+
+  let user = req.user.toJSON();
+
+  delete user.password;
+
+  user['access_token'] = access_token;
+  user['expires_in'] = timeToLive;
+
+  redisHelper.setex(access_token, user, timeToLive)
+    .then(function(reply) {
+      return res.status(200).json(user);
+    })
+    .catch(function(err) {
+      return res.status(403).json(err);
     });
 });
 
@@ -120,21 +143,21 @@ router.get('/verify/:code', policies.isAuthenticated, function(req, res) {
         // Update User database & redis
         UserObj.isVerifyMobilePhone = true;
         promise.all([
-                  models.User.update({
-            isVerifyMobilePhone: true
-          }, {
-            where: {
-              id: req.user.id
-            }
-          }),
-          redisHelper.set(req.user.access_token, UserObj)
-        ])
-        .then(function(result) {
-          return res.status(200).json(true);
-        })
-        .catch(function(err) {
-          throw err;
-        });
+            models.User.update({
+              isVerifyMobilePhone: true
+            }, {
+              where: {
+                id: req.user.id
+              }
+            }),
+            redisHelper.set(req.user.access_token, UserObj)
+          ])
+          .then(function(result) {
+            return res.status(200).json(true);
+          })
+          .catch(function(err) {
+            throw err;
+          });
       }
     })
     .catch(function(err) {
