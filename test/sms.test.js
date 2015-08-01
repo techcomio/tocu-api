@@ -2,7 +2,7 @@
 const SMS = require('../services/SMS'),
       Faker = require('Faker');
 
-let mobilePhone = '0904906903',
+let mobilePhone = '0989414662',
     text = Faker.Lorem.sentence(10);
 
 describe('SMS', function() {

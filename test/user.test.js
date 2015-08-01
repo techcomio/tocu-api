@@ -10,9 +10,31 @@ let loginInfo = {
   rememberme: true
 }
 
+let registerInfo = {
+  mobilePhone: '0932357779',
+  password: 'laclac',
+  name: 'Cú',
+  city: 'Hà Nội',
+  district: 'Cầu Giấy'
+}
+
 describe('User', function() {
+  it('create an user return access_token', function(done) {
+    api.post('/user')
+      .set('Content-Type', 'application/json')
+      .send(registerInfo)
+      .expect(200)
+      .end(function(err, res) {
+        console.log(res.body);
+        if (err) {
+          return done(err);
+        }
+        done();
+      });
+  });
+
   it('get token with mobilePhone & password', function(done) {
-          api.post('/token')
+    api.post('/token')
       .set('Content-Type', 'application/json')
       .set('Authorization', 'Bearer ' + access_token)
       .send(loginInfo)
@@ -25,7 +47,7 @@ describe('User', function() {
         done();
       });
   });
-  
+
   it('request verify mobilePhone', function(done) {
     api.get('/user/verify')
       .set('Authorization', 'Bearer ' + access_token)
@@ -37,7 +59,7 @@ describe('User', function() {
         done();
       });
   });
-  
+
   it('verify mobilePhone with a code', function(done) {
     api.get('/user/verify/' + code)
       .set('Authorization', 'Bearer ' + access_token)
@@ -49,5 +71,5 @@ describe('User', function() {
         done();
       });
   });
-  
+
 });
