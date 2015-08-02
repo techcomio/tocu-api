@@ -1,5 +1,5 @@
 'use strict';
-const shipHelper = require('../services/shipHelper');
+import shipHelper from '../services/shipHelper';
 const express = require('express');
 const router = express.Router();
 
