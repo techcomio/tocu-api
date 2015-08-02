@@ -24,18 +24,35 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: false
     },
     avatarUrl: DataTypes.STRING,
-    isVerifyMobilePhone: DataTypes.BOOLEAN,
-    level: DataTypes.INTEGER,
+    isVerifyMobilePhone: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false
+    },
+    level: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 1
+    },
     company: DataTypes.STRING,
     address: DataTypes.STRING,
-    district: DataTypes.STRING,
-    districtIsUrban: DataTypes.BOOLEAN,
-    city: DataTypes.STRING,
-    noteBySaleman: DataTypes.TEXT
+    district: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    districtIsUrban: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false
+    },
+    city: {
+      type:DataTypes.STRING,
+      allowNull: false
+    },
+    NoteId: DataTypes.INTEGER
   }, {
     classMethods: {
       associate: function(models) {
-
+        User.belongsTo(models.Note);
       }
     }
   });
@@ -58,6 +75,10 @@ module.exports = function(sequelize, DataTypes) {
         console.log('hashPassword error: ', error);
       });
   });
+
+  // User.sync({
+  //   force: true
+  // });
 
   return User;
 };

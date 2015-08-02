@@ -6,14 +6,14 @@ const supertest = require('supertest'),
 let code = '541880';
 let loginInfo = {
   mobilePhone: '0904906903',
-  password: '123456',
+  password: 'tocu911',
   rememberme: true
-}
+};
 
 let registerInfo = {
-  mobilePhone: '0932357779',
-  password: 'laclac',
-  name: 'Cú',
+  mobilePhone: '0904906903',
+  password: 'tocu911',
+  name: 'Trần Đức Hiếu',
   city: 'Hà Nội',
   district: 'Cầu Giấy'
 }
@@ -36,7 +36,6 @@ describe('User', function() {
   it('get token with mobilePhone & password', function(done) {
     api.post('/token')
       .set('Content-Type', 'application/json')
-      .set('Authorization', 'Bearer ' + access_token)
       .send(loginInfo)
       .expect(200)
       .end(function(err, res) {

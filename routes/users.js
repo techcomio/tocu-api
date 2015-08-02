@@ -1,4 +1,8 @@
 'use strict';
+import {
+  findDistrict
+}
+from '../services/shipHelper';
 const models = require('../models');
 const policies = require('../services/policies');
 const SMS = require('../services/SMS');
@@ -14,28 +18,40 @@ const router = express.Router();
 
 // Create User
 router.post('/', function(req, res, next) {
-  models.User.findOrCreate({
-      where: {
-        mobilePhone: req.body.mobilePhone
-      },
-      defaults: req.body
-    })
-    .spread(function(user, created) {
+  let params = req.body;
 
-      if (created === true) {
-        // res.status(201).json(user);
-        req.user = user;
-        return next();
-      }
-      else {
-        return res.status(400).json({
-          message: 'Số điện thoại đã tồn tại.'
+  findDistrict(params.city, params.district)
+    .then(districtObj => {
+      params['districtIsUrban'] = districtObj.isUrban;
+
+      return models.User.findOrCreate({
+          where: {
+            mobilePhone: params.mobilePhone
+          },
+          defaults: params
+        })
+        .spread(function(user, created) {
+
+          if (created === true) {
+            // res.status(201).json(user);
+            req.user = user;
+            return next();
+          }
+          else {
+            return res.status(400).json({
+              message: 'Số điện thoại đã tồn tại.'
+            });
+          }
+        })
+        .catch(err => {
+          throw err;
         });
-      }
     })
-    .catch(function(error) {
-      return res.status(400).json(error);
+    .catch(err => {
+      console.log(err);
+      return res.status(400).json(err);
     });
+
 }, function(req, res) {
   console.log(req.user);
   let access_token = rand(256, 32);

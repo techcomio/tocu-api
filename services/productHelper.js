@@ -2,8 +2,9 @@
 const models = require('../models');
 const promise = require('bluebird');
 
+
 // Check product status for order
-exports.checkProductForOrder = function(productId) {
+export function checkProductForOrder(productId) {
   return new promise(function(resolve, reject) {
     models.Product.findById(productId)
       .then(function(product) {
@@ -11,13 +12,13 @@ exports.checkProductForOrder = function(productId) {
 
         // Nếu sản phẩm này không tồn tại
         if (!product) {
-          reject({
+          return reject({
             message: 'Sản phẩm ID ' + productId + ' không tồn tại'
           });
         }
         // Nếu sản phẩm không available
         else if (product.status !== 'available' && product.status !== 'suspended') {
-          reject({
+          return reject({
             message: 'Sản phẩm ID ' + productId + ' không sẵn sàng để đặt hàng'
           });
         }
@@ -28,9 +29,9 @@ exports.checkProductForOrder = function(productId) {
         return reject(err);
       });
   });
-};
+}
 
-exports.changeProductStatus = function(productId, statusToChange) {
+export function changeProductStatus(productId, statusToChange) {
   return new promise(function(resolve, reject) {
     models.Product.update({
         status: statusToChange
@@ -46,4 +47,4 @@ exports.changeProductStatus = function(productId, statusToChange) {
         return reject(err);
       });
   });
-};
+}

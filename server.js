@@ -1,3 +1,8 @@
+'use strict';
+require('babel/register')({ 
+ stage: 0
+});
+
 var env = process.env.NODE_ENV || 'development';
 var config = require('./config/config.json')[env];
 var app = require('./app');

@@ -1,7 +1,7 @@
 'use strict';
 const supertest = require('supertest'),
   api = supertest('http://tocu-api-dev-tranduchieu.c9.io'),
-  access_token = '7qd6323cvoi6lgfm61iiti6skm9k2cbfbfmqurjv2eceei1ih21m';
+  access_token = '0315mq4563l3kcaum5dlbrli6us6efg116k8mhiq3924mdph89qt';
 
 let OrderParams = {
   "store": "ol",
@@ -22,7 +22,6 @@ let OrderParams = {
   "fixedDiscount": 0,
   "amount": 420000,
   "totalWeight": 500,
-  "noteBySaleman": "Noteeeee",
   "OrderLines": [{
     "product": {
       "id": 11,
@@ -30,8 +29,21 @@ let OrderParams = {
     },
     "unitPrice": 200000,
     "quantity": 1,
-    "amount": 200000
+    "amount": 200000,
+    "weight": 500
   }]
+};
+
+let OrderLineParams = {
+    "OrderId": 3,
+    "product": {
+        "id": 18,
+        "onlineStore": true
+    },
+    "unitPrice": 200000,
+    "quantity": 1,
+    "amount": 200000,
+    "weight": 500
 };
 
 describe('Order', function() {
@@ -53,6 +65,21 @@ describe('Order', function() {
       .set('Content-Type', 'application/json')
       .set('Authorization', 'Bearer ' + access_token)
       .send(OrderParams)
+      .expect(201)
+      .end(function(err, res) {
+        console.log(res.body);
+        if (err) {
+          return done(err);
+        }
+        done();
+      });
+  });
+  
+  it('create an orderline return 201', function(done) {
+    api.post('/orderline')
+      .set('Content-Type', 'application/json')
+      .set('Authorization', 'Bearer ' + access_token)
+      .send(OrderLineParams)
       .expect(201)
       .end(function(err, res) {
         console.log(res.body);

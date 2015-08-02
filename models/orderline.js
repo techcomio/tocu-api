@@ -66,6 +66,11 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.INTEGER,
       allowNull: false
     },
+    weight: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0
+    },
     status: {
       type: DataTypes.ENUM,
       values: ['open', 'suspended', 'processing', 'completed', 'failed', 'canceled'],
@@ -75,11 +80,14 @@ module.exports = function(sequelize, DataTypes) {
     classMethods: {
       associate: function(models) {
         OrderLine.belongsTo(models.User);
+        OrderLine.belongsTo(models.Order);
       }
     }
   });
 
-  // OrderLine.sync({force: true});
-
+  // OrderLine.sync({
+  //   force: true
+  // });
+  
   return OrderLine;
 };

@@ -26,6 +26,11 @@ module.exports = function(sequelize, DataTypes) {
       values: ['atStore', 'cod', 'delivery'],
       allowNull: false
     },
+    shippingCost: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0
+    },
     paymentMethod: {
       type: DataTypes.ENUM,
       values: ['cash', 'card', 'transfer'],
@@ -55,27 +60,25 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: false
     },
     totalWeight: DataTypes.INTEGER,
-    noteBySaleman: DataTypes.TEXT,
+    NoteId: {
+      type: DataTypes.INTEGER
+    },
     createdBy: DataTypes.JSONB,
     updatedBy: DataTypes.JSONB
   }, {
     classMethods: {
       associate: function(models) {
         Order.hasMany(models.OrderLine);
+        Order.hasMany(models.OrderPayment);
+        Order.belongsTo(models.Note);
+        Order.belongsTo(models.User);
       }
     }
   });
 
-  // Before validate
-  /*  Order.hook('beforeValidate', function(order, options, callback) {
-      // callback(null, user);
-      
-      if(!order.store) return callback({message: 'store can not be empty'});
-      
-      order['code'] = storeConfig[order.store].code;
-      
-      return callback(null, order);
-    });*/
-
+  // Order.sync({
+  //   force: true
+  // });
+  
   return Order;
 };

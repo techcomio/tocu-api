@@ -5,7 +5,7 @@ const consts = require('../services/consts');
 const promise = require('bluebird');
 
 
-module.exports = function(city, district, weight) {
+export default function(city, district, weight) {
   return new promise(function(resolve, reject) {
     // Nếu không có city hoặc district hoặc weight trả về badRequest
     if (!city || !district || !weight) {
@@ -18,7 +18,7 @@ module.exports = function(city, district, weight) {
     if (city == 'Hà Nội' && consts.districtsDirectShipping[district]) {
       return resolve({
         cost: 20000,
-        shippingMethod: 'COD'
+        shippingMethod: 'cod'
       });
     }
 
@@ -30,12 +30,13 @@ module.exports = function(city, district, weight) {
         }
       })
       .then(function(districtObj) {
-        if(districtObj) {
-          
-        } else {
+        if (districtObj) {
+
+        }
+        else {
           return reject({
             message: 'city & district invalid'
-          })
+          });
         }
         let shipCost = Cost(parseInt(weight), city, districtObj.isUrban);
         if (Cost == -1) {
@@ -53,8 +54,46 @@ module.exports = function(city, district, weight) {
         return reject(err);
       });
   });
-};
+}
 
+export function findDistrict(city, district) {
+  return new promise((resole, reject) => {
+    if (!district) {
+      models.District.findAll({
+          where: {
+            city: city
+          }
+        })
+        .then(function(districts) {
+          return resole(districts);
+        })
+        .catch(function(error) {
+          return reject(error);
+        });
+    }
+    else {
+      models.District.findOne({
+          where: {
+            city: city,
+            name: district
+          }
+        })
+        .then(district => {
+          if(!district) {
+            return reject({
+              message: 'City & District không tồn tại'
+            });
+          }
+          
+          return resole(district);
+        })
+        .catch(err => {
+          console.log(err);
+          return reject(err);
+        });
+    }
+  });
+}
 
 function Cost(gram, city, isUrban) {
 
