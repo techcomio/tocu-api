@@ -19,8 +19,9 @@ var token = require('./routes/token'),
   cities = require('./routes/cities'),
   shopModels = require('./routes/models'),
   products = require('./routes/products'),
+  productlikes = require('./routes/productlikes'),
   boxes = require('./routes/boxes'),
-  boxes = require('./routes/boxes'),
+  boxlikes = require('./routes/boxlikes'),
   likes = require('./routes/likes'),
   images = require('./routes/images'),
   ships = require('./routes/ships'),
@@ -138,7 +139,9 @@ app
   .use('/city', cities)
   .use('/model', shopModels)
   .use('/product', products)
+  .use('/productlike', productlikes)
   .use('/box', boxes)
+  .use('/boxlike', boxlikes)
   .use('/like', likes)
   .use('/image', images)
   .use('/ship', ships)

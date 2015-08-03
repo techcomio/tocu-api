@@ -1,5 +1,7 @@
+'use strict';
 var models = require('../models');
 var policies = require('../services/policies');
+import sequelize from 'sequelize';
 
 var express = require('express');
 var router = express.Router();
@@ -59,8 +61,13 @@ router.get('/me/:type/:itemId', policies.isAuthenticated, function(req, res) {
 });
 
 // Get all Like
-router.get('/', policies.isAuthenticated, policies.isLevel100, function(req, res) {
-  models.Like.findAll()
+router.get('/', policies.isAuthenticated, function(req, res) {
+  models.Like.findAll({
+        include: [{
+        model: models.Product,
+        where: { state: sequelize.col('like.itemId') }
+    }]
+  })
     .then(function(users) {
       return res.status(200).json(users);
     });

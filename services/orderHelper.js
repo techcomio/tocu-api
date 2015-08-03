@@ -39,14 +39,11 @@ export function OrderLineCreate(Order, OrderLine) {
 
     return checkProductForOrder(productId)
       .then(function(product) {
-        if (Order.shippingMethod == 'cod') {
+        if (Order.paymentMethod == 'cod') {
           OrderLine['status'] = 'processing';
         }
-        else if (product.status == 'available') {
-          OrderLine['status'] = 'open';
-        }
         else {
-          OrderLine['status'] = 'suspended';
+          OrderLine['status'] = 'pending';
         }
 
         OrderLine.product['name'] = product.boxName;
@@ -160,3 +157,4 @@ export function updateOrderAfterAddOrderLine(order, OrderLineObj) {
       });
   });
 }
+

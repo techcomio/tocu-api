@@ -17,7 +17,7 @@ export function checkProductForOrder(productId) {
           });
         }
         // Nếu sản phẩm không available
-        else if (product.status !== 'available' && product.status !== 'suspended') {
+        else if (product.status !== 'available') {
           return reject({
             message: 'Sản phẩm ID ' + productId + ' không sẵn sàng để đặt hàng'
           });
