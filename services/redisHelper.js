@@ -1,3 +1,4 @@
+'use strict';
 var redis = require('redis');
 var redisClient = redis.createClient();
 var promise = require('bluebird');
@@ -54,10 +55,12 @@ exports.setex = function(token, data, timeToLive) {
  */
 exports.get = function(token) {
 	return new promise(function(resolve, reject) {
-		if (token == null) reject('Data is null');
+		if (token == null) return reject('Data is null');
 
 		redisClient.get(token, function(err, userData) {
 			if (err) return reject(err);
+			
+			// if (!userData) reject('Not found');
 
 			return resolve(JSON.parse(userData));
 		});
@@ -77,6 +80,20 @@ exports.del = function(token) {
 
 			if (reply) return resolve(true);
 			else return reject(new Error('Token not found'));
+		});
+	});
+};
+
+
+// Change key
+exports.rename = function(oldKey, newKey) {
+	return new promise(function (resolve, reject) {
+		if (oldKey == null || newKey == null) return reject(new Error('Key is null'));
+		redisClient.set(ff,ff,)
+		redisClient.rename(oldKey, newKey, function(err, reply) {
+			if (err) return reject(err);
+			
+			if (reply) return resolve(true);
 		});
 	});
 };

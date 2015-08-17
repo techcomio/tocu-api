@@ -1,9 +1,15 @@
 'use strict';
 module.exports = function(sequelize, DataTypes) {
   var OrderPayment = sequelize.define('OrderPayment', {
+    UserId: {
+      type: DataTypes.INTEGER
+    },
     OrderId: {
       type: DataTypes.INTEGER,
       allowNull: false
+    },
+    transactionNo: {
+      type: DataTypes.STRING
     },
     amount: {
       type: DataTypes.INTEGER,
@@ -12,6 +18,12 @@ module.exports = function(sequelize, DataTypes) {
     cashier: {
       type: DataTypes.JSONB,
       allowNull: false
+    },
+    userIP: {
+      type: DataTypes.STRING,
+      validate: {
+        isIP: true
+      }
     }
   }, {
     classMethods: {

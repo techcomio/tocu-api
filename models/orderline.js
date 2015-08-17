@@ -70,11 +70,6 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.INTEGER,
       allowNull: false,
       defaultValue: 0
-    },
-    status: {
-      type: DataTypes.ENUM,
-      values: ['open', 'suspended', 'processing', 'completed', 'failed', 'canceled'],
-      defaultValue: 'open'
     }
   }, {
     classMethods: {

@@ -6,7 +6,7 @@ let key = 'verify-code-0904906903';
 
 describe('Redis', function() {
   it('get redis value by key', function(done) {
-    redisHelper.get(key)
+    redisHelper.get('cart-2')
     .then(function(result) {
       console.log(result);
       // assert.equal(result.isFulfilled, false);
@@ -19,6 +19,17 @@ describe('Redis', function() {
   
   it('delete value by key', function(done) {
     redisHelper.del(key)
+    .then(function(reply) {
+      console.log(reply);
+      return done();
+    })
+    .catch(function(err) {
+      return done(err);
+    });
+  });
+  
+  it('change key', function(done) {
+    redisHelper.rename('cart-1', 'cart-2')
     .then(function(reply) {
       console.log(reply);
       return done();

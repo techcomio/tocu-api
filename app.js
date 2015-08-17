@@ -26,7 +26,9 @@ var token = require('./routes/token'),
   images = require('./routes/images'),
   ships = require('./routes/ships'),
   orders = require('./routes/orders'),
-  orderlines = require('./routes/orderlines');
+  orderlines = require('./routes/orderlines'),
+  onepay = require('./routes/onepay'),
+  cart = require('./routes/cart');
 
 // models
 var models = require('./models');
@@ -146,7 +148,9 @@ app
   .use('/image', images)
   .use('/ship', ships)
   .use('/order', orders)
-  .use('/orderline', orderlines);
+  .use('/orderline', orderlines)
+  .use('/onepay', onepay)
+  .use('/cart', cart);
 
 
 

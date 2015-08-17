@@ -3,35 +3,36 @@ const supertest = require('supertest'),
   api = supertest('http://tocu-api-dev-tranduchieu.c9.io'),
   access_token = '0315mq4563l3kcaum5dlbrli6us6efg116k8mhiq3924mdph89qt';
 
+import {reCalculateOrder, reCalculateOrder2, reCalculateOrder3, reCalculateOrder4} from '../services/orderHelper';
+
 let OrderParams = {
-  "store": "ol",
-  "shippingInfo": {
-    "name": "Trần Đức Hiếu",
-    "phone": "0904906903",
-    "company": "Techcom",
-    "address": "P804, CT2A, KĐT Nghĩa Đô, ngõ 106 Hoàng Quốc Việt",
-    "district": "Cầu Giấy",
-    "city": "Hà Nội"
-  },
-  "shippingMethod": "delivery",
-  "shippingCost": 20000,
-  "paymentMethod": "transfer",
-  "status": "open",
-  "total": 400000,
-  "percentageDiscount": 0,
-  "fixedDiscount": 0,
-  "amount": 420000,
-  "totalWeight": 500,
-  "OrderLines": [{
-    "product": {
-      "id": 11,
-      "onlineStore": true
+    "store": "ol",
+    "shippingInfo": {
+        "name": "Trần Đức Hiếu",
+        "phone": "0904906903",
+        "address": "P804, CT2A, KĐT Nghĩa Đô, ngõ 106 Hoàng Quốc Việt",
+        "district": "Cầu Giấy",
+        "city": "Hà Nội"
     },
-    "unitPrice": 200000,
-    "quantity": 1,
-    "amount": 200000,
-    "weight": 500
-  }]
+    "shippingCost": 20000,
+    "paymentMethod": "transfer",
+    "status": "open",
+    "subTotal": 400000,
+    "percentageDiscount": 0,
+    "fixedDiscount": 0,
+    "totalDiscounts": 0,
+    "total": 420000,
+    "totalWeight": 500,
+    "OrderLines": [{
+        "product": {
+            "id": 1,
+            "onlineStore": true
+        },
+        "unitPrice": 400000,
+        "quantity": 1,
+        "amount": 200000,
+        "weight": 500
+    }]
 };
 
 let OrderLineParams = {
@@ -89,4 +90,39 @@ describe('Order', function() {
         done();
       });
   });
+  
+  it('test function reCalculateOrder1', function(done) {
+    reCalculateOrder(OrderParams, function(err, result) {
+      console.log(result);
+      if(err) return done(err);
+      return done();
+    });
+  });
+  
+  it('test function reCalculateOrder2', function(done) {
+    // if (reCalculateOrder2(OrderParams) instanceof Error) {
+    //   done(reCalculateOrder2(OrderParams));
+    // }
+    throw new Error('ểw')
+    return done();
+  });
+  
+  it('test function reCalculateOrder3', function(done) {
+    reCalculateOrder3(OrderParams, function(err, result) {
+      console.log(result);
+      if(err) return done(err);
+      return done();
+    });
+  });
+
+  it('test function reCalculateOrder4', function(done) {
+    reCalculateOrder4(OrderParams)
+    .then(result => {
+      console.log(result);
+    })
+    .catch(err => {
+      done(err);
+    });
+  });
+
 });

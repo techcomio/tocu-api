@@ -1,20 +1,38 @@
-var passport = require('passport');
+let passport = require('passport');
+let redisHelper = require('./redisHelper');
 
 module.exports = {
 
   // Auth with token
   isAuthenticated: function(req, res, next) {
-    passport.authenticate('bearer', {
-      session: false
-    }, function(err, user) {
-      if (user) {
+    if (req.query.access_token) {
+      redisHelper.get(req.query.access_token)
+        .then(function(user) {
+          if (user) {
+            req.user = user;
+            return next();
+          }
+          else {
+            throw new Error;
+          }
+        })
+        .catch(function(error) {
+          return res.status(403).json('Forbidden');
+        });
+    }
+    else {
+      passport.authenticate('bearer', {
+        session: false
+      }, function(err, user) {
+        if (user) {
 
-        req.user = user;
-        return next();
-      }
+          req.user = user;
+          return next();
+        }
 
-      return res.status(403).json('Forbidden');
-    })(req, res);
+        return res.status(403).json('Forbidden');
+      })(req, res);
+    }
   },
 
   // User level 4 - 10

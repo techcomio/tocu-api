@@ -21,11 +21,6 @@ module.exports = function(sequelize, DataTypes) {
         }
       }
     },
-    shippingMethod: {
-      type: DataTypes.ENUM,
-      values: ['atStore', 'cod', 'delivery'],
-      allowNull: false
-    },
     shippingCost: {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -33,15 +28,15 @@ module.exports = function(sequelize, DataTypes) {
     },
     paymentMethod: {
       type: DataTypes.ENUM,
-      values: ['cash', 'card', 'transfer'],
+      values: ['cash', 'card', 'cod', 'transfer'],
       allowNull: false
     },
     status: {
       type: DataTypes.ENUM,
-      values: ['open', 'processing', 'pending', 'partialPaid', 'paid', 'sending', 'completed', 'failed', 'canceled'],
+      values: ['draft', 'open', 'pending', 'partiallyPaid', 'paid', 'sending', 'completed', 'failed', 'canceled'],
       defaultValue: 'open'
     },
-    total: {
+    subTotal: {
       type: DataTypes.INTEGER,
       allowNull: false
     },
@@ -55,7 +50,12 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: false,
       defaultValue: 0
     },
-    amount: {
+    totalDiscounts: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0
+    },
+    total: {
       type: DataTypes.INTEGER,
       allowNull: false
     },
@@ -74,6 +74,13 @@ module.exports = function(sequelize, DataTypes) {
         Order.belongsTo(models.User);
       }
     }
+  });
+
+  Order.hook('afterValidate', function(params, options, callback) {
+    console.log(params, options);
+    return callback({  
+      message: 'errrrrrrrr'
+    });
   });
 
   // Order.sync({

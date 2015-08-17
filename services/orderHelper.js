@@ -1,6 +1,9 @@
 'use strict';
 const models = require('../models');
-import {checkProductForOrder, changeProductStatus} from './productHelper';
+import {
+  checkProductForOrder, changeProductStatus
+}
+from './productHelper';
 import shipHelper from './shipHelper';
 const promise = require('bluebird');
 
@@ -12,7 +15,7 @@ export function checkOrderForContinue(orderId) {
         if (!order) {
           return reject({
             message: 'Order ID ' + orderId + ' không tồn tại'
-          });          
+          });
         }
         if (order.status == 'open' || order.status == 'processing' || order.status == 'pending') {
           return resolve(order);
@@ -158,3 +161,173 @@ export function updateOrderAfterAddOrderLine(order, OrderLineObj) {
   });
 }
 
+export function reCalculateOrder(order, callback) {
+  let total = order.total,
+    subTotal = order.subTotal,
+    shippingCost = order.shippingCost,
+    percentageDiscount = order.percentageDiscount,
+    fixedDiscount = order.fixedDiscount,
+    totalDiscounts = order.totalDiscounts,
+    OrderLines = order.OrderLines;
+
+  try {
+    // Tính tổng OrderLines
+    let totalLinesAmount = 0;
+    for (let i = 0; i < OrderLines.length; i++) {
+      let line = OrderLines[i];
+      if (line.unitPrice * line.quantity !== line.amount) {
+        throw new Error('OrderLine amount không đúng');
+      }
+
+      totalLinesAmount += line.amount;
+    }
+
+    if (totalLinesAmount !== subTotal) {
+      throw new Error('subTotal không đúng');
+    }
+
+    // Tính totalDiscounts
+    if (percentageDiscount !== 0 || fixedDiscount !== 0 || totalDiscounts !== 0) {
+      if (totalDiscounts !== (subTotal * percentageDiscount / 100 + fixedDiscount)) {
+        throw new Error('totalDiscounts không đúng');
+      }
+    }
+
+    // Tính total
+    if (total !== subTotal + shippingCost - totalDiscounts) {
+      throw new Error('total không đúng');
+    }
+  }
+  catch (err) {
+    // console.log(err);
+    return callback(err);
+  }
+
+  return callback(null, true);
+}
+
+export function reCalculateOrder2(order) {
+  let total = order.total,
+    subTotal = order.subTotal,
+    shippingCost = order.shippingCost,
+    percentageDiscount = order.percentageDiscount,
+    fixedDiscount = order.fixedDiscount,
+    totalDiscounts = order.totalDiscounts,
+    OrderLines = order.OrderLines;
+
+
+  // Tính tổng OrderLines
+  let totalLinesAmount = 0;
+  for (let i = 0; i < OrderLines.length; i++) {
+    let line = OrderLines[i];
+    if (line.unitPrice * line.quantity !== line.amount) {
+      throw new Error('OrderLine amount không đúng');
+    }
+
+    totalLinesAmount += line.amount;
+  }
+
+  if (totalLinesAmount !== subTotal) {
+    throw new Error('subTotal không đúng');
+  }
+
+  // Tính totalDiscounts
+  if (percentageDiscount !== 0 || fixedDiscount !== 0 || totalDiscounts !== 0) {
+    if (totalDiscounts !== (subTotal * percentageDiscount / 100 + fixedDiscount)) {
+      throw new Error('totalDiscounts không đúng');
+    }
+  }
+
+  // Tính total
+  if (total !== subTotal + shippingCost - totalDiscounts) {
+    throw new Error('total không đúng');
+  }
+
+
+  return true;
+}
+
+export function reCalculateOrder3(order, callback) {
+  let total = order.total,
+    subTotal = order.subTotal,
+    shippingCost = order.shippingCost,
+    percentageDiscount = order.percentageDiscount,
+    fixedDiscount = order.fixedDiscount,
+    totalDiscounts = order.totalDiscounts,
+    OrderLines = order.OrderLines;
+
+
+  // Tính tổng OrderLines
+  let totalLinesAmount = 0;
+  for (let i = 0; i < OrderLines.length; i++) {
+    let line = OrderLines[i];
+    if (line.unitPrice * line.quantity !== line.amount) {
+      return callback('OrderLine amount không đúng');
+    }
+
+    totalLinesAmount += line.amount;
+  }
+
+  if (totalLinesAmount !== subTotal) {
+    return callback('subTotal không đúng');
+  }
+
+  // Tính totalDiscounts
+  if (percentageDiscount !== 0 || fixedDiscount !== 0 || totalDiscounts !== 0) {
+    if (totalDiscounts !== (subTotal * percentageDiscount / 100 + fixedDiscount)) {
+      return callback('totalDiscounts không đúng');
+    }
+  }
+
+  // Tính total
+  if (total !== subTotal + shippingCost - totalDiscounts) {
+    return callback('total không đúng');
+  }
+
+
+  return callback(null, true);
+}
+
+export function reCalculateOrder4(order) {
+  return new promise((resolve, reject) => {
+    let total = order.total,
+      subTotal = order.subTotal,
+      shippingCost = order.shippingCost,
+      percentageDiscount = order.percentageDiscount,
+      fixedDiscount = order.fixedDiscount,
+      totalDiscounts = order.totalDiscounts,
+      OrderLines = order.OrderLines;
+
+
+    // Tính tổng OrderLines
+    let totalLinesAmount = 0;
+    for (let i = 0; i < OrderLines.length; i++) {
+      let line = OrderLines[i];
+      if (line.unitPrice * line.quantity !== line.amount) {
+        return reject('OrderLine amount không đúng');
+      }
+
+      totalLinesAmount += line.amount;
+    }
+
+    if (totalLinesAmount !== subTotal) {
+      return reject('subTotal không đúng');
+    }
+
+    // Tính totalDiscounts
+    if (percentageDiscount !== 0 || fixedDiscount !== 0 || totalDiscounts !== 0) {
+      if (totalDiscounts !== (subTotal * percentageDiscount / 100 + fixedDiscount)) {
+        return reject('totalDiscounts không đúng');
+      }
+    }
+
+    // Tính total
+    if (total !== subTotal + shippingCost - totalDiscounts) {
+      return reject('total không đúng');
+    }
+
+
+    return resolve(true);
+  });
+
+}

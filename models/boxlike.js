@@ -1,4 +1,6 @@
 'use strict';
+import sequelize from 'sequelize';
+
 module.exports = function(sequelize, DataTypes) {
   var BoxLike = sequelize.define('BoxLike', {
     BoxId: {
@@ -21,6 +23,6 @@ module.exports = function(sequelize, DataTypes) {
   // BoxLike.sync({
   //   force: true
   // });
-  
+
   return BoxLike;
 };

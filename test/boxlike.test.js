@@ -4,7 +4,7 @@ const supertest = require('supertest'),
   access_token = '0315mq4563l3kcaum5dlbrli6us6efg116k8mhiq3924mdph89qt';
 
 let params = {
-  BoxId: 8,
+  BoxId: 'aa',
   UserId: 1
 };
 
