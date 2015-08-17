@@ -83,6 +83,8 @@ export function pushNewCartLines(cartId, newLines) {
           }
           else {
             return reject({
+              code: 304,
+              status: 'Not modified',
               message: 'Sản phẩm đã có trong giỏ hàng'
             });
           }
@@ -157,6 +159,7 @@ export function mergeCartWhenLogin(guestCartId, userCartId) {
               })
               .catch(err => {
                 console.log(err);
+                return resolve(err);
               });
           })
           .catch(() => {
@@ -168,7 +171,7 @@ export function mergeCartWhenLogin(guestCartId, userCartId) {
                 });
               })
               .catch(err => {
-                console.log(err);
+                return resolve(err);
               });
           });
       })

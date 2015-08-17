@@ -89,7 +89,6 @@ exports.del = function(token) {
 exports.rename = function(oldKey, newKey) {
 	return new promise(function (resolve, reject) {
 		if (oldKey == null || newKey == null) return reject(new Error('Key is null'));
-		redisClient.set(ff,ff,)
 		redisClient.rename(oldKey, newKey, function(err, reply) {
 			if (err) return reject(err);
 			

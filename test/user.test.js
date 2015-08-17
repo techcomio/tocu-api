@@ -7,7 +7,8 @@ let code = '541880';
 let loginInfo = {
   mobilePhone: '0904906903',
   password: 'tocu911',
-  rememberme: true
+  rememberme: true,
+  cartId: '861d1eb6ee0f6acfed7b'
 };
 
 let registerInfo = {
