@@ -7,7 +7,8 @@ import {
   pushOrCreateCart,
   pushNewCartLines,
   createCart,
-  deleteCartLine
+  deleteCartLine,
+  updateProductsInCart
 }
 from '../services/cartHelper';
 
@@ -119,12 +120,45 @@ router.get('/:cartId?', function(req, res, next) {
     return next();
   }
   else {
-
+    return res.status(400).json({
+      message: 'Vui lòng gửi kèm Cart ID'
+    });
   }
 }, policies.isAuthenticated, function(req, res) {
   return getCartById(req.user.id)
     .then(cartArray => {
       return res.status(200).json(cartArray);
+    })
+    .catch(err => {
+      return res.status(400).json(err);
+    });
+});
+
+// Update cart
+router.put('/:cartId?', function(req, res, next) {
+  let cartId = req.params.cartId;
+  if (cartId && isNaN(cartId)) {
+    return updateProductsInCart(cartId)
+      .then(cartUpdated => {
+        return res.status(cartUpdated.code).json(cartUpdated.data);
+      })
+      .catch(err => {
+        return res.status(400).json(err);
+      });
+  }
+  else if (req.headers['authorization'] || isNaN(cartId) === false) {
+    return next();
+  }
+  else {
+    return res.status(400).json({
+      message: 'Vui lòng gửi kèm Cart ID'
+    });
+  }
+}, policies.isAuthenticated, function(req, res) {
+  console.log(req.user.id);
+  return updateProductsInCart(req.user.id)
+    .then(cartUpdated => {
+      return res.status(cartUpdated.code).json(cartUpdated.data);
     })
     .catch(err => {
       return res.status(400).json(err);

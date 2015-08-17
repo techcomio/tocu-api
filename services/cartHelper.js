@@ -1,4 +1,5 @@
 'use strict';
+const models = require('../models');
 const redisHelper = require('../services/redisHelper');
 const promise = require('bluebird');
 const _ = require('underscore');
@@ -9,6 +10,10 @@ export function getCartById(cartId) {
   return new promise((resolve, reject) => {
     redisHelper.get('cart-' + cartId)
       .then(cartArray => {
+        if (!cartArray) return reject({
+          code: 404,
+          message: 'Cart not found'
+        });
         return resolve(cartArray);
       })
       .catch(err => {
@@ -110,8 +115,14 @@ export function deleteCartLine(cartId, productId) {
           let newArray = _.reject(cartArray, function(obj) {
             return obj['id'] == productId;
           });
-
-          return resolve(newArray);
+          // Lưu lại vào Redis
+          redisHelper.setex('cart-' + cartId, newArray, timeToLive)
+            .then(() => {
+              return resolve(newArray);
+            })
+            .catch(err => {
+              return reject(err);
+            });
         }
         else {
           return reject({
@@ -181,6 +192,79 @@ export function mergeCartWhenLogin(guestCartId, userCartId) {
         return resolve({
           cartId: userCartId
         });
+      });
+  });
+}
+
+export function updateProductsInCart(cartId) {
+  return new promise((resolve, reject) => {
+    let countModified = 0;
+    // Get cart
+    return getCartById(cartId)
+      .then(cartArray => {
+        return promise.map(cartArray, function(cart) {
+            return models.Product.findById(cart.id)
+              .then(product => {
+                if (product) {
+                  if (cart['status'] !== product.status || cart['price'] !== product.price || cart['salePrice'] !== product.salePrice) {
+                    cart['status'] = product.status;
+                    cart['price'] = product.price;
+                    cart['salePrice'] = product.salePrice;
+
+                    countModified = countModified + 1;
+                  }
+
+                  return cart;
+                }
+                else {
+                  cart['status'] = 'deleted';
+                  countModified = countModified + 1;
+                  // Sau cùng sẽ xóa
+                  process.nextTick(function() {
+                    return deleteCartLine(cartId, cart.id)
+                      .then(result => {
+                        console.log(result);
+                      })
+                      .catch(err => {
+                        console.log(err);
+                      });
+                  });
+                  return cart;
+                }
+              })
+              .catch(err => {
+                return reject(err);
+              });
+          })
+          .then(result => {
+            if (countModified > 0) {
+              // Update in redis
+              redisHelper.setex('cart-' + cartId, result, timeToLive)
+                .then(reply => {
+                  return resolve({
+                    code: 200,
+                    status: 'OK',
+                    data: result
+                  });
+                })
+                .catch(err => {
+                  return reject(err);
+                });
+            }
+            else {
+              return resolve({
+                code: 304,
+                status: 'Not Modified',
+                data: cartArray
+              });
+            }
+          })
+          .catch(err => {
+            return reject(err);
+          });
+      })
+      .catch(err => {
+        return reject(err);
       });
   });
 }
