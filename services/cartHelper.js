@@ -60,9 +60,6 @@ export function createCart(cartId, params) {
 }
 
 export function pushNewCartLines(cartId, newLines) {
-  if (typeof newLines !== "string") {
-    throw new Error("First argument to send_command must be the command name string, not " + typeof newLines);
-  }
   return new promise((resolve, reject) => {
     // Get
     redisHelper.get('cart-' + cartId)
