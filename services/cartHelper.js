@@ -74,7 +74,7 @@ export function pushNewCartLines(cartId, newLines) {
           }
 
           if (newLines.length > 0) {
-            cartArray.push(newLines);
+            cartArray.concat(newLines);
 
             redisHelper.setex('cart-' + cartId, cartArray, timeToLive)
               .then(reply => {
