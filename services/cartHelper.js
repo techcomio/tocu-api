@@ -9,7 +9,6 @@ export function getCartById(cartId) {
   return new promise((resolve, reject) => {
     redisHelper.get('cart-' + cartId)
       .then(cartArray => {
-        console.log(cartId);
         return resolve(cartArray);
       })
       .catch(err => {
@@ -23,7 +22,6 @@ export function pushOrCreateCart(cartId, newLines) {
 
     checkAndGetCart(cartId)
       .then(cartArray => {
-        console.log('---------');
         pushNewCartLines(cartId, newLines)
           .then((result) => {
             return resolve(result);
@@ -64,7 +62,6 @@ export function pushNewCartLines(cartId, newLines) {
     // Get
     redisHelper.get('cart-' + cartId)
       .then(cartArray => {
-        console.log(cartArray);
         if (cartArray) {
 
           for (let i = 0; i < cartArray.length; i++) {
@@ -72,10 +69,10 @@ export function pushNewCartLines(cartId, newLines) {
               return item.id == cartArray[i].id;
             });
           }
-
+          console.log(newLines);
           if (newLines.length > 0) {
-            cartArray.concat(newLines);
-
+            cartArray = cartArray.concat(newLines);
+            console.log(cartArray);
             redisHelper.setex('cart-' + cartId, cartArray, timeToLive)
               .then(reply => {
                 return resolve(cartArray);

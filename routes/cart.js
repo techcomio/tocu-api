@@ -96,7 +96,6 @@ router.get('/', policies.isAuthenticated, function(req, res) {
 
   redisHelper.get(cartId)
     .then(cartArray => {
-      console.log(cartId);
       return res.status(200).json(cartArray);
     })
     .catch(err => {

@@ -39,9 +39,9 @@ let newLineObj = [{
 
 describe('Cart', function() {
   it('push or create cart line return 201', function(done) {
-    api.post('/cart')
+    api.post('/cart/861d1eb6ee0f6acfed7b')
       .set('Content-Type', 'application/json')
-      .set('Authorization', 'Bearer ' + access_token)
+      // .set('Authorization', 'Bearer ' + access_token)
       .send(newLineObj)
       .expect(201)
       .end(function(err, res) {
