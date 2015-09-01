@@ -123,7 +123,7 @@ router.get('/:cartId?', function(req, res, next) {
 });
 
 // Update cart lines
-router.put('line/:cartId?', function(req, res, next) {
+router.put('/line/:cartId?', function(req, res, next) {
   let cartId = req.params.cartId;
   if (cartId && isNaN(cartId)) {
     return updateProductsInCart(cartId)
