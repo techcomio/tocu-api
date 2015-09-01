@@ -212,8 +212,8 @@ export function updateProductsInCart(cartId) {
     let countModified = 0;
     // Get cart
     return getCartById(cartId)
-      .then(cartArray => {
-        return promise.map(cartArray, function(cart) {
+      .then(cart => {
+        return promise.map(cart.lines, function(cart) {
             return models.Product.findById(cart.id)
               .then(product => {
                 if (product) {
@@ -266,7 +266,7 @@ export function updateProductsInCart(cartId) {
               return resolve({
                 code: 304,
                 status: 'Not Modified',
-                data: cartArray
+                data: cart
               });
             }
           })
