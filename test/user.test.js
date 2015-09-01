@@ -1,23 +1,26 @@
 'use strict';
+let env = process.env.NODE_ENV || 'development';
+let testConfig = require('../config/test.json')[env];
+
 const supertest = require('supertest'),
   api = supertest('http://tocu-api-dev-tranduchieu.c9.io'),
-  access_token = '7qd6323cvoi6lgfm61iiti6skm9k2cbfbfmqurjv2eceei1ih21m';
+  access_token = testConfig['access_token'];
 
 let code = '541880';
 let loginInfo = {
-  mobilePhone: '0904906903',
-  password: 'tocu911',
+  mobilePhone: testConfig['mobilePhone'],
+  password: testConfig['mobilePhone'],
   rememberme: true,
   cartId: '861d1eb6ee0f6acfed7b'
 };
 
 let registerInfo = {
-  mobilePhone: '0904906903',
-  password: 'tocu911',
+  mobilePhone: testConfig['mobilePhone'],
+  password: testConfig['mobilePhone'],
   name: 'Trần Đức Hiếu',
   city: 'Hà Nội',
   district: 'Cầu Giấy'
-}
+};
 
 describe('User', function() {
   it('create an user return access_token', function(done) {

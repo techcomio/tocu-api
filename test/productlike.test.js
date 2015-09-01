@@ -1,7 +1,10 @@
 'use strict';
+let env = process.env.NODE_ENV || 'development';
+let testConfig = require('../config/test.json')[env];
+
 const supertest = require('supertest'),
   api = supertest('http://tocu-api-dev-tranduchieu.c9.io'),
-  access_token = '0315mq4563l3kcaum5dlbrli6us6efg116k8mhiq3924mdph89qt';
+  access_token = testConfig['access_token'];
 
 let params = {
   ProductId: 8,
