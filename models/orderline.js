@@ -2,6 +2,11 @@
 const promise = require('bluebird');
 const validator = require('validator');
 
+import {
+  checkProductForOrder
+}
+from '../services/productHelper';
+
 module.exports = function(sequelize, DataTypes) {
   var OrderLine = sequelize.define('OrderLine', {
     OrderId: {
@@ -80,9 +85,19 @@ module.exports = function(sequelize, DataTypes) {
     }
   });
 
+  // OrderLine.hook('afterValidate', function(params, options, callback) {
+  //   return checkProductForOrder(params.product.id)
+  //   .then(result => {
+  //     return callback(null);
+  //   })
+  //   .catch(err => {
+  //     return callback(err);
+  //   });
+  // });
+
   // OrderLine.sync({
   //   force: true
   // });
-  
+
   return OrderLine;
 };

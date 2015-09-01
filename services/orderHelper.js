@@ -42,39 +42,15 @@ export function OrderLineCreate(Order, OrderLine) {
 
     return checkProductForOrder(productId)
       .then(function(product) {
-        if (Order.paymentMethod == 'cod') {
-          OrderLine['status'] = 'processing';
-        }
-        else {
-          OrderLine['status'] = 'pending';
-        }
 
         OrderLine.product['name'] = product.boxName;
         OrderLine.product['code'] = product.code;
         OrderLine.product['imageUrl'] = product.images[0] || null;
 
-        // findOrCreate OrderLine
-        return models.OrderLine.findOrCreate({
-            where: {
-              product: {
-                id: productId.toString()
-              },
-              UserId: Order.UserId
-            },
-            defaults: OrderLine
-          })
-          .spread(function(result, created) {
-
-            // Tạo OrderLine thành công
-            if (created === true) {
-              return resolve(result);
-            }
-            else {
-              // User đã order sản phẩm này
-              throw {
-                message: 'Bạn đã đặt hàng sản phẩm ' + OrderLine.product.name + ' - ' + OrderLine.product.code
-              };
-            }
+        // Create OrderLine
+        return models.OrderLine.create(OrderLine)
+          .then(function(result) {
+            return resolve(result);
           })
           .catch(function(err) {
             throw err;
@@ -101,15 +77,7 @@ export function OrderLinesBulkCreate(Order, OrderLinesParams) {
       .then(function(result) {
         // Change products status
         return promise.map(result, function(OrderLineResult) {
-          console.log(OrderLineResult);
-          let productStatusToChange;
-          if (OrderLineResult.status == 'processing') {
-            productStatusToChange = 'sold';
-          }
-          else {
-            productStatusToChange = 'suspended';
-          }
-          changeProductStatus(OrderLineResult.product.id, productStatusToChange)
+          changeProductStatus(OrderLineResult.product.id, 'sold')
             .then(function() {
               return resolve(result);
             })
@@ -119,6 +87,7 @@ export function OrderLinesBulkCreate(Order, OrderLinesParams) {
         });
       })
       .catch(function(err) {
+        // TODO: delete all OrderLines created
         return reject(err);
       });
   });
@@ -159,92 +128,6 @@ export function updateOrderAfterAddOrderLine(order, OrderLineObj) {
         return reject(err);
       });
   });
-}
-
-export function reCalculateOrder(order, callback) {
-  let total = order.total,
-    subTotal = order.subTotal,
-    shippingCost = order.shippingCost,
-    percentageDiscount = order.percentageDiscount,
-    fixedDiscount = order.fixedDiscount,
-    totalDiscounts = order.totalDiscounts,
-    OrderLines = order.OrderLines;
-
-  try {
-    // Tính tổng OrderLines
-    let totalLinesAmount = 0;
-    for (let i = 0; i < OrderLines.length; i++) {
-      let line = OrderLines[i];
-      if (line.unitPrice * line.quantity !== line.amount) {
-        throw new Error('OrderLine amount không đúng');
-      }
-
-      totalLinesAmount += line.amount;
-    }
-
-    if (totalLinesAmount !== subTotal) {
-      throw new Error('subTotal không đúng');
-    }
-
-    // Tính totalDiscounts
-    if (percentageDiscount !== 0 || fixedDiscount !== 0 || totalDiscounts !== 0) {
-      if (totalDiscounts !== (subTotal * percentageDiscount / 100 + fixedDiscount)) {
-        throw new Error('totalDiscounts không đúng');
-      }
-    }
-
-    // Tính total
-    if (total !== subTotal + shippingCost - totalDiscounts) {
-      throw new Error('total không đúng');
-    }
-  }
-  catch (err) {
-    // console.log(err);
-    return callback(err);
-  }
-
-  return callback(null, true);
-}
-
-export function reCalculateOrder2(order) {
-  let total = order.total,
-    subTotal = order.subTotal,
-    shippingCost = order.shippingCost,
-    percentageDiscount = order.percentageDiscount,
-    fixedDiscount = order.fixedDiscount,
-    totalDiscounts = order.totalDiscounts,
-    OrderLines = order.OrderLines;
-
-
-  // Tính tổng OrderLines
-  let totalLinesAmount = 0;
-  for (let i = 0; i < OrderLines.length; i++) {
-    let line = OrderLines[i];
-    if (line.unitPrice * line.quantity !== line.amount) {
-      throw new Error('OrderLine amount không đúng');
-    }
-
-    totalLinesAmount += line.amount;
-  }
-
-  if (totalLinesAmount !== subTotal) {
-    throw new Error('subTotal không đúng');
-  }
-
-  // Tính totalDiscounts
-  if (percentageDiscount !== 0 || fixedDiscount !== 0 || totalDiscounts !== 0) {
-    if (totalDiscounts !== (subTotal * percentageDiscount / 100 + fixedDiscount)) {
-      throw new Error('totalDiscounts không đúng');
-    }
-  }
-
-  // Tính total
-  if (total !== subTotal + shippingCost - totalDiscounts) {
-    throw new Error('total không đúng');
-  }
-
-
-  return true;
 }
 
 export function reCalculateOrder3(order, callback) {
@@ -288,7 +171,7 @@ export function reCalculateOrder3(order, callback) {
   return callback(null, true);
 }
 
-export function reCalculateOrder4(order) {
+export function reCalculateOrder(order) {
   return new promise((resolve, reject) => {
     let total = order.total,
       subTotal = order.subTotal,

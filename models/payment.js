@@ -1,6 +1,6 @@
 'use strict';
 module.exports = function(sequelize, DataTypes) {
-  var OrderPayment = sequelize.define('OrderPayment', {
+  var Payment = sequelize.define('Payment', {
     UserId: {
       type: DataTypes.INTEGER
     },
@@ -8,12 +8,17 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.INTEGER,
       allowNull: false
     },
+    method: {
+      type: DataTypes.ENUM,
+      values: ['cash', 'atmCard', 'debitCard', 'transfer'],
+      allowNull: false
+    },
     transactionNo: {
       type: DataTypes.STRING
     },
     amount: {
       type: DataTypes.INTEGER,
-      allowNull: false
+      allowNull: false 
     },
     cashier: {
       type: DataTypes.JSONB,
@@ -29,14 +34,14 @@ module.exports = function(sequelize, DataTypes) {
     classMethods: {
       associate: function(models) {
         // associations can be defined here
-        OrderPayment.belongsTo(models.Order);
+        Payment.belongsTo(models.Order);
       }
     }
   });
 
-  // OrderPayment.sync({
+  // Payment.sync({
   //   force: true
   // });
 
-  return OrderPayment;
+  return Payment;
 };

@@ -1,6 +1,5 @@
 'use strict';
 const policies = require('../services/policies');
-const redisHelper = require('../services/redisHelper');
 import crypto from 'crypto';
 import {
   getCartById,
@@ -8,15 +7,16 @@ import {
   pushNewCartLines,
   createCart,
   deleteCartLine,
-  updateProductsInCart
+  updateProductsInCart,
+  updateCheckoutInfo
 }
 from '../services/cartHelper';
 
 const express = require('express');
 const router = express.Router();
 
-// Push or Create cart
-router.post('/:cartId?', function(req, res, next) {
+// Push lines or Create cart
+router.post('/line/:cartId?', function(req, res, next) {
   if (Array.isArray(req.body) === false) {
     return res.status(400).json({
       message: 'Data is not array'
@@ -38,9 +38,10 @@ router.post('/:cartId?', function(req, res, next) {
     return next();
   }
   else {
+    console.log(req.body);
     const randomBytes = crypto.randomBytes(10).toString('hex');
 
-    return createCart(randomBytes, req.body)
+    return createCart(randomBytes, {lines: req.body})
       .then(result => {
         return res.status(201).json(result);
       })
@@ -59,7 +60,7 @@ router.post('/:cartId?', function(req, res, next) {
 });
 
 // Delete a line
-router.delete('/:productId/:cartId?', function(req, res, next) {
+router.delete('/line/:productId/:cartId?', function(req, res, next) {
   let productId = req.params.productId;
   let cartId = req.params.cartId;
 
@@ -91,19 +92,6 @@ router.delete('/:productId/:cartId?', function(req, res, next) {
 });
 
 // Get cart
-router.get('/', policies.isAuthenticated, function(req, res) {
-  let userId = req.user.id;
-  let cartId = 'cart-' + userId;
-
-  redisHelper.get(cartId)
-    .then(cartArray => {
-      return res.status(200).json(cartArray);
-    })
-    .catch(err => {
-      return res.status(400).json(err);
-    });
-});
-
 router.get('/:cartId?', function(req, res, next) {
 
   let cartId = req.params.cartId;
@@ -134,15 +122,15 @@ router.get('/:cartId?', function(req, res, next) {
     });
 });
 
-// Update cart
-router.put('/:cartId?', function(req, res, next) {
+// Update cart lines
+router.put('line/:cartId?', function(req, res, next) {
   let cartId = req.params.cartId;
   if (cartId && isNaN(cartId)) {
     return updateProductsInCart(cartId)
       .then(cartUpdated => {
         return res.status(cartUpdated.code).json(cartUpdated.data);
       })
-      .catch(err => {
+      .catch(err => { 
         return res.status(400).json(err);
       });
   }
@@ -155,7 +143,6 @@ router.put('/:cartId?', function(req, res, next) {
     });
   }
 }, policies.isAuthenticated, function(req, res) {
-  console.log(req.user.id);
   return updateProductsInCart(req.user.id)
     .then(cartUpdated => {
       return res.status(cartUpdated.code).json(cartUpdated.data);
@@ -163,6 +150,38 @@ router.put('/:cartId?', function(req, res, next) {
     .catch(err => {
       return res.status(400).json(err);
     });
+});
+
+// Update checkout
+router.put('/checkout/:cartId?', function(req, res, next) {
+  let cartId = req.params.cartId;
+  
+  if (cartId && isNaN(cartId)) {
+    return updateCheckoutInfo(cartId, req.body)
+      .then(cartUpdated => {
+        return res.status(200).json(cartUpdated);
+      })
+      .catch(err => { 
+        return res.status(400).json(err);
+      });
+  }
+  else if (req.headers['authorization'] || isNaN(cartId) === false) {
+    return next();
+  }
+  else {
+    return res.status(400).json({ 
+      message: 'Vui lòng gửi kèm Cart ID'
+    });
+  }
+  
+}, function(req, res) {
+    return updateCheckoutInfo(req.user.id, req.body)
+      .then(cartUpdated => {
+        return res.status(200).json(cartUpdated);
+      })
+      .catch(err => { 
+        return res.status(400).json(err);
+      });  
 });
 
 export default router;

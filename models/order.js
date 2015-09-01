@@ -28,12 +28,12 @@ module.exports = function(sequelize, DataTypes) {
     },
     paymentMethod: {
       type: DataTypes.ENUM,
-      values: ['cash', 'card', 'cod', 'transfer'],
+      values: ['cash', 'atmCard', 'debitCard', 'transfer'],
       allowNull: false
     },
     status: {
       type: DataTypes.ENUM,
-      values: ['draft', 'open', 'pending', 'partiallyPaid', 'paid', 'sending', 'completed', 'failed', 'canceled'],
+      values: ['open', 'pending', 'partiallyPaid', 'paid', 'sending', 'completed', 'failed', 'canceled'],
       defaultValue: 'open'
     },
     subTotal: {
@@ -69,7 +69,7 @@ module.exports = function(sequelize, DataTypes) {
     classMethods: {
       associate: function(models) {
         Order.hasMany(models.OrderLine);
-        Order.hasMany(models.OrderPayment);
+        Order.hasMany(models.Payment);
         Order.belongsTo(models.Note);
         Order.belongsTo(models.User);
       }

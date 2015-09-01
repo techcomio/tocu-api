@@ -24,7 +24,6 @@ export function getCartById(cartId) {
 
 export function pushOrCreateCart(cartId, newLines) {
   return new promise((resolve, reject) => {
-
     checkAndGetCart(cartId)
       .then(cartArray => {
         pushNewCartLines(cartId, newLines)
@@ -32,23 +31,36 @@ export function pushOrCreateCart(cartId, newLines) {
             return resolve(result);
           })
           .catch(err => {
+            console.log(err);
             return reject(err);
           });
       })
       .catch(() => {
         // Nếu cart không tồn tại thì tạo mới
-        createCart(cartId, newLines)
+        createCart(cartId, {
+            lines: newLines
+          })
           .then(result => {
             return resolve(result);
           })
           .catch(err => {
             return reject(err);
-          })
-      })
-  })
+          });
+      });
+  });
 }
 
 export function createCart(cartId, params) {
+
+  if (!params.shippingInfo) {
+    params['shippingInfo'] = null;
+  }
+
+  if (!params.paymentMethod) {
+    params['paymentMethod'] = null;
+  }
+
+
   return new promise((resolve, reject) => {
     redisHelper.setex('cart-' + cartId, params, timeToLive)
       .then(reply => {
@@ -66,21 +78,20 @@ export function pushNewCartLines(cartId, newLines) {
   return new promise((resolve, reject) => {
     // Get
     redisHelper.get('cart-' + cartId)
-      .then(cartArray => {
-        if (cartArray) {
-
-          for (let i = 0; i < cartArray.length; i++) {
+      .then(cart => {
+        let lines = cart.lines;
+        if (lines) {
+          for (let i = 0; i < lines.length; i++) {
             newLines = _.reject(newLines, function(item) {
-              return item.id == cartArray[i].id;
+              return item.id == lines[i].id;
             });
           }
-          console.log(newLines);
           if (newLines.length > 0) {
-            cartArray = cartArray.concat(newLines);
-            console.log(cartArray);
-            redisHelper.setex('cart-' + cartId, cartArray, timeToLive)
+            lines = lines.concat(newLines);
+            console.log(lines);
+            redisHelper.setex('cart-' + cartId, lines, timeToLive)
               .then(reply => {
-                return resolve(cartArray);
+                return resolve(lines);
               })
               .catch(err => {
                 return reject(err);
@@ -268,3 +279,72 @@ export function updateProductsInCart(cartId) {
       });
   });
 }
+
+export function updateShippingInfo(cartId, shippingInfo) {
+  return new promise((resolve, reject) => {
+    checkAndGetCart(cartId)
+      .then(cartObj => {
+        cartObj['shippingInfo'] = shippingInfo;
+        // Lưu lại vào Redis
+        redisHelper.setex('cart-' + cartId, cartObj, timeToLive)
+          .then(() => {
+            return resolve(cartObj);
+          })
+          .catch(err => {
+            return reject(err);
+          });
+      })
+      .catch(err => {
+        return reject(err);
+      });
+  });
+}
+
+export function updatePaymentInfo(cartId, paymentInfo) {
+  return new promise((resolve, reject) => {
+    checkAndGetCart(cartId)
+      .then(cartObj => {
+        cartObj['paymentMethod'] = paymentInfo.paymentMethod;
+        // Lưu lại vào Redis
+        redisHelper.setex('cart-' + cartId, cartObj, timeToLive)
+          .then(() => {
+            return resolve(cartObj);
+          })
+          .catch(err => {
+            return reject(err);
+          });
+      })
+      .catch(err => {
+        return reject(err);
+      });
+  });
+}
+
+
+export function updateCheckoutInfo(cartId, checkoutInfo) {
+  return new promise((resolve, reject) => {
+    checkAndGetCart(cartId)
+      .then(cartObj => {
+        if (checkoutInfo.shippingInfo) {
+          cartObj['shippingInfo'] = checkoutInfo.shippingInfo;
+        }
+        
+        if (checkoutInfo.paymentMethod) {
+          cartObj['paymentMethod'] = checkoutInfo.paymentMethod;
+        }
+        
+        // Lưu lại vào Redis
+        redisHelper.setex('cart-' + cartId, cartObj, timeToLive)
+          .then(() => {
+            return resolve(cartObj);
+          })
+          .catch(err => {
+            return reject(err);
+          });
+      })
+      .catch(err => {
+        return reject(err);
+      });
+  });
+}
+ 
